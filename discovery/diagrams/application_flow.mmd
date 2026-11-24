@@ -1,0 +1,26 @@
+flowchart TD
+    A([Mulai]) --> B[Landing Page]
+    B --> C{Sudah login?}
+    C -->|Belum| D[Login atau registrasi Pembeli]
+    D --> E{Autentikasi berhasil?}
+    E -->|Tidak| D
+    E -->|Ya| F{Role}
+    C -->|Sudah| F
+    F -->|Pembeli| G[Dashboard Pembeli]
+    F -->|Penjual| H[Dashboard Penjual]
+    F -->|Admin| I[Dashboard Admin]
+    G --> J[Katalog → Keranjang → Checkout]
+    J --> K[Pesanan dan komunikasi]
+    H --> L[Produk dan stok]
+    H --> M[Pesanan, transaksi, pembayaran]
+    L --> N{Validasi Admin}
+    I --> N
+    N -->|Disetujui| J
+    N -->|Ditolak| L
+    M --> K
+    I --> O[Pengguna, keuangan, kurir, Customer Service]
+    K --> P[Profil atau logout]
+    L --> P
+    M --> P
+    O --> P
+    P --> Q([Selesai])

@@ -1,0 +1,28 @@
+flowchart TD
+    A([Pembeli buka browser]) --> B[Landing Page]
+    B --> C{Sudah punya akun?}
+    C -->|Tidak| D[Register]
+    D --> E[Dashboard Pembeli]
+    C -->|Ya| F[Login]
+    F --> E
+    E --> G[Lihat Katalog Produk]
+    G --> H{Filter Matang/Mentah}
+    H --> I[Tambah ke Keranjang]
+    I --> J[Lihat Keranjang]
+    J --> K{Stok & produk OK?}
+    K -->|Tidak| L[Edit/hapus item]
+    L --> J
+    K -->|Ya| M[Checkout: Pilih alamat, kurir, metode bayar]
+    M --> N[Submit Pesanan]
+    N --> O{Metode bayar}
+    O -->|Transfer| P[Upload Bukti Pembayaran]
+    O -->|COD| Q[Tunggu penjual konfirmasi]
+    P --> R[Tunggu verifikasi penjual]
+    R --> S{Verifikasi}
+    S -->|Lunas| T[Pesanan Diproses]
+    S -->|Gagal| P
+    Q --> T
+    T --> U[Penjual input resi & kirim]
+    U --> V[Status: Dikirim]
+    V --> W[Pembeli konfirmasi barang diterima]
+    W --> X([Pesanan Selesai])

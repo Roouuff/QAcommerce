@@ -1,0 +1,2587 @@
+{
+  "project": {
+    "name": "Immortal Tahu",
+    "type": "E-Commerce / Marketplace (B2C) — Single Vendor",
+    "purpose": "Platform jual-beli produk tahu online antara penjual tahu dan pembeli",
+    "url": "http://localhost:8000",
+    "tech_stack": "PHP 8.4, Laravel 13, MySQL, Vite 7, Tailwind CSS 4, Laravel Excel, Laravel DomPDF",
+    "discovery_date": "23 November 2026",
+    "discovery_method": "Source code analysis plus Playwright read-only crawl for publicly linked pages",
+    "evidence_level": "Documented from source; not runtime verified"
+  },
+  "roles": [
+    {
+      "id": "R01",
+      "name": "Publik",
+      "description": "Pengunjung tanpa login",
+      "auth": false
+    },
+    {
+      "id": "R02",
+      "name": "Pembeli",
+      "description": "Pengguna yang berbelanja",
+      "auth": true
+    },
+    {
+      "id": "R03",
+      "name": "Penjual",
+      "description": "Pengelola toko dan produk",
+      "auth": true
+    },
+    {
+      "id": "R04",
+      "name": "Admin",
+      "description": "Administrator sistem",
+      "auth": true
+    }
+  ],
+  "pages": [
+    {
+      "id": "P00",
+      "name": "Landing Page / Login Redirect",
+      "url": "/",
+      "module": "Autentikasi",
+      "roles": "Publik",
+      "purpose": "Halaman utama: tampilkan landing page untuk publik, redirect dashboard untuk user terlogin",
+      "components": "Konten landing, tombol Login",
+      "actions": "Login, Register",
+      "status": "Documented from source; not runtime verified"
+    },
+    {
+      "id": "P01",
+      "name": "Login",
+      "url": "/login",
+      "module": "Autentikasi",
+      "roles": "Publik (guest)",
+      "purpose": "Autentikasi pengguna dengan email dan password",
+      "components": "Form email & password, checkbox remember me, link lupa password",
+      "actions": "Submit login, Navigasi ke Register, Navigasi ke Forgot Password",
+      "status": "Documented from source; not runtime verified"
+    },
+    {
+      "id": "P02",
+      "name": "Register",
+      "url": "/register",
+      "module": "Autentikasi",
+      "roles": "Publik (guest)",
+      "purpose": "Pendaftaran akun baru sebagai Pembeli",
+      "components": "Form nama, email, password, konfirmasi password",
+      "actions": "Submit register (otomatis role Pembeli)",
+      "status": "Documented from source; not runtime verified"
+    },
+    {
+      "id": "P03",
+      "name": "Forgot Password",
+      "url": "/forgot-password",
+      "module": "Autentikasi",
+      "roles": "Publik (guest)",
+      "purpose": "Permintaan tautan reset kata sandi via email",
+      "components": "Form email",
+      "actions": "Submit email",
+      "status": "Documented from source; not runtime verified"
+    },
+    {
+      "id": "P04",
+      "name": "Reset Password",
+      "url": "/reset-password/{token}",
+      "module": "Autentikasi",
+      "roles": "Publik (via link email)",
+      "purpose": "Form baru kata sandi dengan token validasi",
+      "components": "Form password baru, konfirmasi password",
+      "actions": "Submit reset password",
+      "status": "Documented from source; not runtime verified"
+    },
+    {
+      "id": "P05",
+      "name": "Dashboard Pembeli",
+      "url": "/dashboard/pembeli",
+      "module": "Dashboard",
+      "roles": "Pembeli",
+      "purpose": "Halaman utama pembeli: ringkasan dan navigasi fitur",
+      "components": "Statistik pesanan, link navigasi cepat",
+      "actions": "Navigasi ke fitur pembeli",
+      "status": "Documented from source; not runtime verified"
+    },
+    {
+      "id": "P06",
+      "name": "Katalog Produk",
+      "url": "/pembeli/produk",
+      "module": "Belanja",
+      "roles": "Pembeli",
+      "purpose": "Melihat seluruh produk yang disetujui dan aktif, filter kategori",
+      "components": "Grid/list produk, filter Matang/Mentah, tombol tambah ke keranjang, badge stok",
+      "actions": "Filter kategori, Tambah ke keranjang, Lihat detail produk",
+      "status": "Documented from source; not runtime verified"
+    },
+    {
+      "id": "P07",
+      "name": "Keranjang Belanja",
+      "url": "/pembeli/keranjang",
+      "module": "Belanja",
+      "roles": "Pembeli",
+      "purpose": "Kelola item keranjang sebelum checkout",
+      "components": "Tabel item (nama, qty, harga, subtotal), tombol ubah qty, hapus, total, tombol checkout",
+      "actions": "Ubah jumlah item, Hapus item, Lanjut ke checkout",
+      "status": "Documented from source; not runtime verified"
+    },
+    {
+      "id": "P08",
+      "name": "Checkout",
+      "url": "/pembeli/checkout",
+      "module": "Belanja",
+      "roles": "Pembeli",
+      "purpose": "Proses pembuatan pesanan: pilih alamat, kurir, metode bayar",
+      "components": "Form alamat, dropdown kurir (dengan kalkulasi ongkir), dropdown metode bayar, ringkasan pesanan, tombol pesan",
+      "actions": "Pilih kurir, Pilih metode bayar, Submit pesanan",
+      "status": "Documented from source; not runtime verified"
+    },
+    {
+      "id": "P09",
+      "name": "Daftar Pesanan Pembeli",
+      "url": "/pembeli/pesanan",
+      "module": "Pesanan",
+      "roles": "Pembeli",
+      "purpose": "Melihat semua pesanan milik pembeli dengan status terkini",
+      "components": "Tabel pesanan (ID, tanggal, status, total), filter status, tombol aksi per pesanan",
+      "actions": "Upload bukti bayar, Konfirmasi barang diterima, Lihat bukti pembayaran",
+      "status": "Documented from source; not runtime verified"
+    },
+    {
+      "id": "P10",
+      "name": "Pusat Bantuan Pembeli",
+      "url": "/pembeli/bantuan",
+      "module": "Customer Service",
+      "roles": "Pembeli",
+      "purpose": "Tiket bantuan: buka percakapan baru atau lanjutkan dengan admin",
+      "components": "Percakapan CS, form kirim pesan, status open/closed",
+      "actions": "Kirim pesan ke admin, Lihat balasan admin",
+      "status": "Documented from source; not runtime verified"
+    },
+    {
+      "id": "P11",
+      "name": "Chat Pesanan Pembeli",
+      "url": "/pembeli/chat",
+      "module": "Komunikasi",
+      "roles": "Pembeli",
+      "purpose": "Chat dengan penjual terkait pesanan",
+      "components": "Daftar pesanan yang bisa di-chat, kotak pesan, badge unread",
+      "actions": "Kirim pesan, Lihat riwayat pesan",
+      "status": "Documented from source; not runtime verified"
+    },
+    {
+      "id": "P12",
+      "name": "Profil Pengguna",
+      "url": "/profile",
+      "module": "Profil",
+      "roles": "Semua (login)",
+      "purpose": "Edit data diri: nama, alamat, telepon, foto profil",
+      "components": "Form nama, email (readonly), telepon, alamat, upload foto",
+      "actions": "Update profil",
+      "status": "Documented from source; not runtime verified"
+    },
+    {
+      "id": "P13",
+      "name": "Dashboard Penjual",
+      "url": "/dashboard/penjual",
+      "module": "Dashboard",
+      "roles": "Penjual",
+      "purpose": "Halaman utama penjual: ringkasan pesanan, stok, dan navigasi",
+      "components": "Statistik pesanan, ringkasan stok, navigasi cepat, badge pesanan baru",
+      "actions": "Navigasi ke fitur penjual",
+      "status": "Documented from source; not runtime verified"
+    },
+    {
+      "id": "P14",
+      "name": "Daftar Produk Penjual",
+      "url": "/penjual/produk",
+      "module": "Produk",
+      "roles": "Penjual",
+      "purpose": "Kelola semua produk milik penjual: lihat, tambah, edit, stok",
+      "components": "Tabel produk (nama, kategori, harga, stok, status approval), form tambah produk, form edit, form stok",
+      "actions": "Tambah produk, Edit produk, Kelola stok (mutasi masuk/keluar/sesuaikan)",
+      "status": "Documented from source; not runtime verified"
+    },
+    {
+      "id": "P15",
+      "name": "Daftar Pesanan Penjual",
+      "url": "/penjual/pesanan",
+      "module": "Pesanan",
+      "roles": "Penjual",
+      "purpose": "Proses pesanan dari pembeli: verifikasi bayar, kirim barang",
+      "components": "Tabel pesanan (ID, pembeli, produk, status, metode bayar), tombol aksi per status",
+      "actions": "Verifikasi pembayaran (lunas/gagal), Input resi & bukti kirim, Advance status",
+      "status": "Documented from source; not runtime verified"
+    },
+    {
+      "id": "P16",
+      "name": "Transaksi Penjual",
+      "url": "/penjual/transaksi",
+      "module": "Keuangan",
+      "roles": "Penjual",
+      "purpose": "Lihat semua transaksi dan ekspor laporan",
+      "components": "Tabel transaksi (ID, pesanan, total, metode, status, tanggal), filter, tombol ekspor",
+      "actions": "Filter transaksi, Ekspor Excel, Ekspor PDF",
+      "status": "Documented from source; not runtime verified"
+    },
+    {
+      "id": "P17",
+      "name": "Metode Pembayaran Penjual",
+      "url": "/penjual/metode-pembayaran",
+      "module": "Pengaturan",
+      "roles": "Penjual",
+      "purpose": "Kelola metode pembayaran yang ditampilkan ke pembeli saat checkout",
+      "components": "Tabel metode bayar (nama, kode, nomor, pemilik rekening, status), form tambah, form edit",
+      "actions": "Tambah metode bayar, Edit metode bayar, Aktif/nonaktif metode bayar, Hapus metode bayar",
+      "status": "Documented from source; not runtime verified"
+    },
+    {
+      "id": "P18",
+      "name": "Pusat Bantuan Penjual",
+      "url": "/penjual/bantuan",
+      "module": "Customer Service",
+      "roles": "Penjual",
+      "purpose": "Tiket bantuan penjual ke admin",
+      "components": "Percakapan CS, form kirim pesan, status open/closed",
+      "actions": "Kirim pesan ke admin, Lihat balasan admin",
+      "status": "Documented from source; not runtime verified"
+    },
+    {
+      "id": "P19",
+      "name": "Chat Pesanan Penjual",
+      "url": "/penjual/chat",
+      "module": "Komunikasi",
+      "roles": "Penjual",
+      "purpose": "Chat dengan pembeli terkait pesanan",
+      "components": "Daftar pesanan yang bisa di-chat, kotak pesan, badge unread",
+      "actions": "Kirim pesan, Lihat riwayat pesan",
+      "status": "Documented from source; not runtime verified"
+    },
+    {
+      "id": "P20",
+      "name": "Dashboard Admin",
+      "url": "/dashboard/admin",
+      "module": "Dashboard",
+      "roles": "Admin",
+      "purpose": "Ringkasan seluruh sistem: pengguna, produk, pesanan, transaksi, CS",
+      "components": "Kartu statistik (jumlah pengguna, produk, pesanan, dsb.), navigasi ke semua modul admin",
+      "actions": "Navigasi ke semua modul admin",
+      "status": "Documented from source; not runtime verified"
+    },
+    {
+      "id": "P21",
+      "name": "Manajemen Pengguna",
+      "url": "/admin/pengguna",
+      "module": "Pengguna",
+      "roles": "Admin",
+      "purpose": "Kelola akun pengguna: lihat, ubah role, aktif/nonaktif, kirim link reset",
+      "components": "Tabel pengguna (nama, email, role, status, tanggal daftar), dropdown role, toggle status, tombol reset password",
+      "actions": "Ubah role pengguna, Aktifkan/nonaktifkan akun, Kirim link reset password",
+      "status": "Documented from source; not runtime verified"
+    },
+    {
+      "id": "P22",
+      "name": "Validasi Produk",
+      "url": "/admin/validasi-produk",
+      "module": "Produk",
+      "roles": "Admin",
+      "purpose": "Review pengajuan produk baru dari penjual: approve/reject",
+      "components": "Tabel produk pending (nama, penjual, kategori, harga), form catatan admin, tombol setujui/tolak",
+      "actions": "Setujui produk, Tolak produk dengan catatan",
+      "status": "Documented from source; not runtime verified"
+    },
+    {
+      "id": "P23",
+      "name": "Manajemen Produk Admin",
+      "url": "/admin/produk",
+      "module": "Produk",
+      "roles": "Admin",
+      "purpose": "Lihat semua produk, aktif/nonaktif, ubah harga",
+      "components": "Tabel semua produk (nama, penjual, kategori, harga, status approval, is_active), toggle aktif, form ubah harga",
+      "actions": "Aktifkan/nonaktifkan produk, Ubah harga produk",
+      "status": "Documented from source; not runtime verified"
+    },
+    {
+      "id": "P24",
+      "name": "Pesanan Admin",
+      "url": "/admin/pesanan",
+      "module": "Pesanan",
+      "roles": "Admin",
+      "purpose": "Monitor semua pesanan, proses pengembalian dana",
+      "components": "Tabel semua pesanan (ID, pembeli, penjual, status, total, metode bayar), form refund",
+      "actions": "Lihat detail pesanan, Proses refund",
+      "status": "Documented from source; not runtime verified"
+    },
+    {
+      "id": "P25",
+      "name": "Laporan Keuangan",
+      "url": "/admin/keuangan",
+      "module": "Keuangan",
+      "roles": "Admin",
+      "purpose": "Laporan keuangan dengan filter dan ekspor",
+      "components": "Ringkasan total transaksi, tabel transaksi, filter tanggal/status, tombol ekspor",
+      "actions": "Filter laporan, Ekspor Excel, Ekspor PDF",
+      "status": "Documented from source; not runtime verified"
+    },
+    {
+      "id": "P26",
+      "name": "Jasa Kirim",
+      "url": "/admin/jasa-kirim",
+      "module": "Pengaturan",
+      "roles": "Admin",
+      "purpose": "Kelola daftar jasa pengiriman yang tersedia",
+      "components": "Tabel jasa kirim (nama, kode, tarif/kg, is_active), form tambah, form edit",
+      "actions": "Tambah jasa kirim, Edit jasa kirim",
+      "status": "Documented from source; not runtime verified"
+    },
+    {
+      "id": "P27",
+      "name": "Pusat Bantuan Admin",
+      "url": "/admin/pusat-bantuan",
+      "module": "Customer Service",
+      "roles": "Admin",
+      "purpose": "Kelola semua tiket bantuan dari penjual dan pembeli",
+      "components": "Tabel percakapan CS (pengguna, role, status, pesan terakhir, badge unread), panel balas, tombol buka/tutup tiket",
+      "actions": "Lihat percakapan, Balas pesan, Tutup percakapan, Buka kembali percakapan",
+      "status": "Documented from source; not runtime verified"
+    },
+    {
+      "id": "P28",
+      "name": "Pengarah Dashboard Berdasarkan Role",
+      "url": "/dashboard",
+      "module": "Navigasi",
+      "roles": "Semua (login)",
+      "purpose": "Meneruskan pengguna terautentikasi ke dashboard sesuai role",
+      "components": "Tidak ada komponen halaman; respons redirect",
+      "actions": "Redirect ke dashboard Pembeli, Penjual, atau Admin",
+      "status": "Documented from source; not runtime verified"
+    }
+  ],
+  "features": [
+    {
+      "id": "F01",
+      "name": "Login",
+      "module": "Autentikasi",
+      "page": "P01",
+      "actor": "Publik (guest)",
+      "trigger": "Submit form login",
+      "input": "Email, Password, Remember Me",
+      "process": "Validasi credential + is_active, Auth::attempt, session regenerate, redirect ke dashboard sesuai role",
+      "output": "Redirect ke dashboard role-specific atau pesan error",
+      "validation": "Email required, Password required, is_active harus true",
+      "priority": "Critical",
+      "status": "Documented from source; not runtime verified"
+    },
+    {
+      "id": "F02",
+      "name": "Register Akun Pembeli",
+      "module": "Autentikasi",
+      "page": "P02",
+      "actor": "Publik (guest)",
+      "trigger": "Submit form register",
+      "input": "Nama, Email, Password, Konfirmasi Password",
+      "process": "Validasi unique email, buat User dengan role=pembeli, login otomatis, redirect dashboard pembeli",
+      "output": "Akun baru, session aktif, redirect dashboard pembeli",
+      "validation": "Nama max 255, Email unique, Password min 8, confirmed",
+      "priority": "High",
+      "status": "Documented from source; not runtime verified"
+    },
+    {
+      "id": "F03",
+      "name": "Logout",
+      "module": "Autentikasi",
+      "page": "P01",
+      "actor": "Semua (login)",
+      "trigger": "Klik tombol logout",
+      "input": "-",
+      "process": "Auth::logout, session invalidate, token regenerate",
+      "output": "Redirect ke halaman login",
+      "validation": "-",
+      "priority": "High",
+      "status": "Documented from source; not runtime verified"
+    },
+    {
+      "id": "F04",
+      "name": "Forgot Password",
+      "module": "Autentikasi",
+      "page": "P03",
+      "actor": "Publik (guest)",
+      "trigger": "Submit email",
+      "input": "Email",
+      "process": "Kirim link reset ke email (via mailer log di local)",
+      "output": "Flash message konfirmasi pengiriman",
+      "validation": "Email required, email harus ada di DB",
+      "priority": "Medium",
+      "status": "Documented from source; not runtime verified"
+    },
+    {
+      "id": "F05",
+      "name": "Reset Password",
+      "module": "Autentikasi",
+      "page": "P04",
+      "actor": "Publik (via link)",
+      "trigger": "Submit form reset",
+      "input": "Token (dari URL), Password baru, Konfirmasi",
+      "process": "Validasi token, update password user",
+      "output": "Password diupdate, redirect login",
+      "validation": "Password min 8, confirmed, token valid",
+      "priority": "Medium",
+      "status": "Documented from source; not runtime verified"
+    },
+    {
+      "id": "F06",
+      "name": "Edit Profil",
+      "module": "Profil",
+      "page": "P12",
+      "actor": "Semua (login)",
+      "trigger": "Submit form profil",
+      "input": "Nama, Telepon, Alamat, Foto (opsional)",
+      "process": "Update data user, simpan foto ke storage",
+      "output": "Data profil diperbarui",
+      "validation": "Nama required, Foto max 5MB jpg/jpeg/png/webp",
+      "priority": "Medium",
+      "status": "Documented from source; not runtime verified"
+    },
+    {
+      "id": "F07",
+      "name": "Lihat Katalog Produk",
+      "module": "Belanja",
+      "page": "P06",
+      "actor": "Pembeli",
+      "trigger": "Akses halaman produk",
+      "input": "Filter kategori (Matang/Mentah)",
+      "process": "Query produk status=disetujui & is_active=true milik penjual",
+      "output": "Grid produk dengan info harga, stok, kategori",
+      "validation": "-",
+      "priority": "High",
+      "status": "Documented from source; not runtime verified"
+    },
+    {
+      "id": "F08",
+      "name": "Tambah ke Keranjang",
+      "module": "Belanja",
+      "page": "P06",
+      "actor": "Pembeli",
+      "trigger": "Klik tombol tambah ke keranjang",
+      "input": "Produk ID, Jumlah, Kategori",
+      "process": "Validasi stok, cek produk aktif & disetujui, buat/update BuyerCartItem dalam transaksi DB",
+      "output": "Item ditambahkan ke keranjang, flash message",
+      "validation": "Jumlah min 1 max 1000, jumlah + existing <= stok, produk harus disetujui & aktif",
+      "priority": "High",
+      "status": "Documented from source; not runtime verified"
+    },
+    {
+      "id": "F09",
+      "name": "Ubah Jumlah Keranjang",
+      "module": "Belanja",
+      "page": "P07",
+      "actor": "Pembeli",
+      "trigger": "Submit form ubah qty di keranjang",
+      "input": "Line key (produk_id-kategori), Jumlah baru",
+      "process": "Validasi stok baru, update BuyerCartItem",
+      "output": "Jumlah diperbarui, total berubah",
+      "validation": "Jumlah min 1 max 1000, tidak melebihi stok, produk masih aktif",
+      "priority": "Medium",
+      "status": "Documented from source; not runtime verified"
+    },
+    {
+      "id": "F10",
+      "name": "Hapus Item Keranjang",
+      "module": "Belanja",
+      "page": "P07",
+      "actor": "Pembeli",
+      "trigger": "Klik hapus item",
+      "input": "Line key",
+      "process": "Delete BuyerCartItem",
+      "output": "Item dihapus dari keranjang",
+      "validation": "-",
+      "priority": "Medium",
+      "status": "Documented from source; not runtime verified"
+    },
+    {
+      "id": "F11",
+      "name": "Checkout & Buat Pesanan",
+      "module": "Belanja",
+      "page": "P08",
+      "actor": "Pembeli",
+      "trigger": "Submit form checkout",
+      "input": "Alamat pengiriman, Kurir, Metode bayar",
+      "process": "Validasi stok (lock), hitung ongkir (ShippingCalculator), buat Pesanan + DetailPesanan + Transaksi + MutasiStok dalam transaksi DB atomik, hapus item keranjang",
+      "output": "Pesanan baru dibuat, redirect ke daftar pesanan",
+      "validation": "Semua item harus tersedia, stok cukup, kurir aktif, metode bayar valid, satu toko per pesanan",
+      "priority": "Critical",
+      "status": "Documented from source; not runtime verified"
+    },
+    {
+      "id": "F12",
+      "name": "Upload Bukti Pembayaran",
+      "module": "Pesanan",
+      "page": "P09",
+      "actor": "Pembeli",
+      "trigger": "Submit form upload",
+      "input": "Pesanan ID, File foto bukti",
+      "process": "Simpan bukti ke storage, update transaksi.bukti_pembayaran",
+      "output": "Bukti tersimpan, penjual dapat verifikasi",
+      "validation": "File required, image jpg/jpeg/png/webp max 5MB",
+      "priority": "High",
+      "status": "Documented from source; not runtime verified"
+    },
+    {
+      "id": "F13",
+      "name": "Konfirmasi Barang Diterima",
+      "module": "Pesanan",
+      "page": "P09",
+      "actor": "Pembeli",
+      "trigger": "Klik tombol konfirmasi",
+      "input": "Pesanan ID",
+      "process": "Validasi status=dikirim & pembayaran lunas, update status=selesai, update tanggal_selesai, untuk COD update transaksi=lunas",
+      "output": "Status pesanan menjadi selesai",
+      "validation": "Status pesanan harus dikirim, pembayaran valid",
+      "priority": "High",
+      "status": "Documented from source; not runtime verified"
+    },
+    {
+      "id": "F14",
+      "name": "Lihat Bukti Pembayaran",
+      "module": "Pesanan",
+      "page": "P09",
+      "actor": "Pembeli, Penjual",
+      "trigger": "Klik link lihat bukti",
+      "input": "Pesanan ID",
+      "process": "Show/download file bukti dari storage",
+      "output": "Tampilkan/unduh file bukti pembayaran",
+      "validation": "-",
+      "priority": "Medium",
+      "status": "Documented from source; not runtime verified"
+    },
+    {
+      "id": "F15",
+      "name": "Chat Pesanan (Pembeli↔Penjual)",
+      "module": "Komunikasi",
+      "page": "P11,P19",
+      "actor": "Pembeli, Penjual",
+      "trigger": "Kirim pesan di chat pesanan",
+      "input": "Pesanan ID, Isi pesan",
+      "process": "Buat OrderMessage, throttle 10/menit",
+      "output": "Pesan terkirim, badge unread diperbarui",
+      "validation": "Pesan tidak boleh kosong, max (tbd), throttle 10/menit",
+      "priority": "Medium",
+      "status": "Documented from source; not runtime verified"
+    },
+    {
+      "id": "F16",
+      "name": "Pusat Bantuan (Buka/Kirim Pesan)",
+      "module": "Customer Service",
+      "page": "P10,P18",
+      "actor": "Pembeli, Penjual",
+      "trigger": "Kirim pesan di CS",
+      "input": "Isi pesan",
+      "process": "Buat/update CustomerServiceConversation + Message, throttle 10/menit",
+      "output": "Pesan terkirim ke admin, status percakapan open",
+      "validation": "Throttle 10/menit",
+      "priority": "Medium",
+      "status": "Documented from source; not runtime verified"
+    },
+    {
+      "id": "F17",
+      "name": "Tambah Produk Baru (Penjual)",
+      "module": "Produk",
+      "page": "P14",
+      "actor": "Penjual",
+      "trigger": "Submit form tambah produk",
+      "input": "Nama, Kategori (matang/mentah), Harga, Stok Awal, Deskripsi, Gambar",
+      "process": "Buat Produk (status=menunggu), buat Stok, buat MutasiStok jika stok_awal>0",
+      "output": "Produk baru dengan status menunggu validasi",
+      "validation": "Semua field required, Harga min 1 max 100jt, Stok max 100rb, Gambar max 5MB",
+      "priority": "High",
+      "status": "Documented from source; not runtime verified"
+    },
+    {
+      "id": "F18",
+      "name": "Edit Produk (Penjual)",
+      "module": "Produk",
+      "page": "P14",
+      "actor": "Penjual",
+      "trigger": "Submit form edit produk",
+      "input": "Nama, Kategori, Harga, Deskripsi, Gambar (opsional)",
+      "process": "Update Produk, catat RiwayatHarga jika harga berubah, jika status=ditolak → resubmit ke menunggu",
+      "output": "Produk diperbarui, riwayat harga tercatat",
+      "validation": "Hanya produk milik penjual, validasi sama dengan tambah produk",
+      "priority": "High",
+      "status": "Documented from source; not runtime verified"
+    },
+    {
+      "id": "F19",
+      "name": "Kelola Stok — Mutasi (Penjual)",
+      "module": "Produk",
+      "page": "P14",
+      "actor": "Penjual",
+      "trigger": "Submit form mutasi stok",
+      "input": "Produk ID, Kategori, Jenis (masuk/keluar), Jumlah, Catatan",
+      "process": "Validasi keluar ≤ stok, update Stok, buat MutasiStok",
+      "output": "Stok diperbarui, mutasi tercatat",
+      "validation": "Keluar tidak boleh > stok, Jumlah min 1 max 100rb",
+      "priority": "High",
+      "status": "Documented from source; not runtime verified"
+    },
+    {
+      "id": "F20",
+      "name": "Kelola Stok — Sesuaikan (Penjual)",
+      "module": "Produk",
+      "page": "P14",
+      "actor": "Penjual",
+      "trigger": "Submit form sesuaikan stok",
+      "input": "Produk ID, Kategori, Jumlah baru",
+      "process": "Hitung selisih, update Stok, buat MutasiStok otomatis masuk/keluar",
+      "output": "Stok disesuaikan, mutasi tercatat",
+      "validation": "Jumlah min 0 max 100rb",
+      "priority": "Medium",
+      "status": "Documented from source; not runtime verified"
+    },
+    {
+      "id": "F21",
+      "name": "Verifikasi Pembayaran (Penjual)",
+      "module": "Pesanan",
+      "page": "P15",
+      "actor": "Penjual",
+      "trigger": "Submit form verifikasi",
+      "input": "Pesanan ID, Status pembayaran (lunas/gagal), Catatan",
+      "process": "Validasi status pesanan=menunggu & bukti ada & bukan COD, update Transaksi + status pesanan jika lunas",
+      "output": "Pembayaran dikonfirmasi/ditolak, pesanan diproses jika lunas",
+      "validation": "Status pesanan harus menunggu, bukan COD, bukti ada",
+      "priority": "Critical",
+      "status": "Documented from source; not runtime verified"
+    },
+    {
+      "id": "F22",
+      "name": "Input Resi & Kirim Pesanan (Penjual)",
+      "module": "Pesanan",
+      "page": "P15",
+      "actor": "Penjual",
+      "trigger": "Submit form kirim",
+      "input": "Pesanan ID, Nomor Resi, Foto Bukti Pengiriman",
+      "process": "Validasi status=diproses & pembayaran lunas/cod, simpan foto, update status=dikirim + resi",
+      "output": "Status pesanan menjadi dikirim, resi dan bukti tersimpan",
+      "validation": "Status harus diproses, pembayaran valid, resi required, foto max 5MB",
+      "priority": "Critical",
+      "status": "Documented from source; not runtime verified"
+    },
+    {
+      "id": "F23",
+      "name": "Advance Status COD (Penjual)",
+      "module": "Pesanan",
+      "page": "P15",
+      "actor": "Penjual",
+      "trigger": "Klik tombol lanjutkan",
+      "input": "Pesanan ID",
+      "process": "Validasi COD: status=menunggu → diproses langsung tanpa verifikasi bayar",
+      "output": "Status pesanan menjadi diproses",
+      "validation": "Hanya untuk COD atau jika sudah diverifikasi",
+      "priority": "High",
+      "status": "Documented from source; not runtime verified"
+    },
+    {
+      "id": "F24",
+      "name": "Lihat & Ekspor Transaksi (Penjual)",
+      "module": "Keuangan",
+      "page": "P16",
+      "actor": "Penjual",
+      "trigger": "Lihat tabel / klik ekspor",
+      "input": "Filter (opsional)",
+      "process": "Query transaksi milik produk penjual, generate Excel/PDF",
+      "output": "Tabel transaksi, file unduhan",
+      "validation": "-",
+      "priority": "Medium",
+      "status": "Documented from source; not runtime verified"
+    },
+    {
+      "id": "F25",
+      "name": "Kelola Metode Pembayaran (Penjual)",
+      "module": "Pengaturan",
+      "page": "P17",
+      "actor": "Penjual",
+      "trigger": "Submit form tambah/edit/hapus/toggle",
+      "input": "Nama metode, Kode, Nomor rekening, Nama pemilik, Status aktif",
+      "process": "CRUD SellerPaymentMethod",
+      "output": "Metode diperbarui, tampil di checkout pembeli",
+      "validation": "Nama required, Nomor required",
+      "priority": "Medium",
+      "status": "Documented from source; not runtime verified"
+    },
+    {
+      "id": "F26",
+      "name": "Balas CS Admin (Admin)",
+      "module": "Customer Service",
+      "page": "P27",
+      "actor": "Admin",
+      "trigger": "Submit form balas",
+      "input": "Conversation ID, Isi pesan",
+      "process": "Buat CustomerServiceMessage, throttle 20/menit",
+      "output": "Pesan terkirim ke user",
+      "validation": "Throttle 20/menit",
+      "priority": "Medium",
+      "status": "Documented from source; not runtime verified"
+    },
+    {
+      "id": "F27",
+      "name": "Kelola Percakapan CS (Admin)",
+      "module": "Customer Service",
+      "page": "P27",
+      "actor": "Admin",
+      "trigger": "Klik tutup/buka tiket",
+      "input": "Conversation ID",
+      "process": "Update status percakapan open/closed, catat closed_at",
+      "output": "Status tiket berubah",
+      "validation": "-",
+      "priority": "Medium",
+      "status": "Documented from source; not runtime verified"
+    },
+    {
+      "id": "F28",
+      "name": "Validasi Produk (Admin)",
+      "module": "Produk",
+      "page": "P22",
+      "actor": "Admin",
+      "trigger": "Submit form approval",
+      "input": "Produk ID, Status (disetujui/ditolak), Catatan admin",
+      "process": "Validasi status produk=menunggu, update status + catatan_admin",
+      "output": "Produk disetujui/ditolak, tampil/tidak di katalog",
+      "validation": "Status produk harus menunggu, catatan wajib jika ditolak",
+      "priority": "Critical",
+      "status": "Documented from source; not runtime verified"
+    },
+    {
+      "id": "F29",
+      "name": "Aktif/Nonaktif Produk (Admin)",
+      "module": "Produk",
+      "page": "P23",
+      "actor": "Admin",
+      "trigger": "Toggle is_active",
+      "input": "Produk ID, is_active boolean",
+      "process": "Update produk.is_active",
+      "output": "Produk tampil/tidak di katalog pembeli",
+      "validation": "-",
+      "priority": "High",
+      "status": "Documented from source; not runtime verified"
+    },
+    {
+      "id": "F30",
+      "name": "Ubah Harga Produk (Admin)",
+      "module": "Produk",
+      "page": "P23",
+      "actor": "Admin",
+      "trigger": "Submit form ubah harga",
+      "input": "Produk ID, Harga baru",
+      "process": "Update harga, catat RiwayatHarga jika berbeda",
+      "output": "Harga diperbarui, riwayat tercatat",
+      "validation": "Harga min 1 max 100jt",
+      "priority": "Medium",
+      "status": "Documented from source; not runtime verified"
+    },
+    {
+      "id": "F31",
+      "name": "Kelola Pengguna (Admin)",
+      "module": "Pengguna",
+      "page": "P21",
+      "actor": "Admin",
+      "trigger": "Toggle/dropdown ubah role/status atau klik reset",
+      "input": "User ID, Role atau Status baru",
+      "process": "Update user.role / user.is_active, atau kirim email reset",
+      "output": "Data pengguna diperbarui, atau email terkirim",
+      "validation": "Tidak bisa ubah/nonaktif akun sendiri, penjual hanya 1, admin aktif terakhir tidak bisa dicopot",
+      "priority": "High",
+      "status": "Documented from source; not runtime verified"
+    },
+    {
+      "id": "F32",
+      "name": "Proses Refund (Admin)",
+      "module": "Pesanan",
+      "page": "P24",
+      "actor": "Admin",
+      "trigger": "Submit form refund",
+      "input": "Pesanan ID, Alasan refund",
+      "process": "Buat PengembalianDana, catat admin_id",
+      "output": "Refund tercatat",
+      "validation": "-",
+      "priority": "High",
+      "status": "Documented from source; not runtime verified"
+    },
+    {
+      "id": "F33",
+      "name": "Laporan Keuangan & Ekspor (Admin)",
+      "module": "Keuangan",
+      "page": "P25",
+      "actor": "Admin",
+      "trigger": "Lihat laporan / klik ekspor",
+      "input": "Filter tanggal, status",
+      "process": "Query transaksi semua penjual, generate Excel/PDF",
+      "output": "Tabel laporan keuangan, file unduhan",
+      "validation": "-",
+      "priority": "Medium",
+      "status": "Documented from source; not runtime verified"
+    },
+    {
+      "id": "F34",
+      "name": "Kelola Jasa Kirim (Admin)",
+      "module": "Pengaturan",
+      "page": "P26",
+      "actor": "Admin",
+      "trigger": "Submit form tambah/edit",
+      "input": "Nama, Kode, Tarif per kg, Status aktif",
+      "process": "CRUD JasaKirim",
+      "output": "Jasa kirim tersedia di checkout pembeli",
+      "validation": "Nama required, Kode required, Tarif min 0",
+      "priority": "Medium",
+      "status": "Documented from source; not runtime verified"
+    },
+    {
+      "id": "F35",
+      "name": "Lihat Landing Page",
+      "module": "Navigasi",
+      "page": "P00",
+      "actor": "Publik (guest)",
+      "trigger": "Buka halaman root",
+      "input": "URL /",
+      "process": "Tampilkan informasi usaha dan tautan login/registrasi",
+      "output": "Landing page tersedia untuk pengunjung",
+      "validation": "-",
+      "priority": "Low",
+      "status": "Documented from source; not runtime verified"
+    },
+    {
+      "id": "F36",
+      "name": "Lihat Dashboard Pembeli",
+      "module": "Dashboard",
+      "page": "P05",
+      "actor": "Pembeli",
+      "trigger": "Buka dashboard pembeli",
+      "input": "Sesi Pembeli",
+      "process": "Tampilkan ringkasan akun dan tautan belanja/pesanan",
+      "output": "Ringkasan pesanan, katalog, dan keranjang",
+      "validation": "-",
+      "priority": "Medium",
+      "status": "Documented from source; not runtime verified"
+    },
+    {
+      "id": "F37",
+      "name": "Lihat Dashboard Penjual",
+      "module": "Dashboard",
+      "page": "P13",
+      "actor": "Penjual",
+      "trigger": "Buka dashboard penjual",
+      "input": "Sesi Penjual",
+      "process": "Tampilkan indikator toko dan pesanan mendesak",
+      "output": "Ringkasan penjualan, pesanan, produk aktif, pengajuan produk",
+      "validation": "-",
+      "priority": "Medium",
+      "status": "Documented from source; not runtime verified"
+    },
+    {
+      "id": "F38",
+      "name": "Lihat Dashboard Admin",
+      "module": "Dashboard",
+      "page": "P20",
+      "actor": "Admin",
+      "trigger": "Buka dashboard admin",
+      "input": "Sesi Admin",
+      "process": "Tampilkan statistik platform dan ringkasan antrean",
+      "output": "Statistik pengguna, validasi produk, transaksi, CS",
+      "validation": "-",
+      "priority": "Medium",
+      "status": "Documented from source; not runtime verified"
+    },
+    {
+      "id": "F39",
+      "name": "Pengarah Dashboard Berdasarkan Role",
+      "module": "Navigasi",
+      "page": "P28",
+      "actor": "Semua (login)",
+      "trigger": "Akses /dashboard",
+      "input": "Sesi pengguna terautentikasi",
+      "process": "Pilih dashboard berdasarkan role akun",
+      "output": "Redirect ke dashboard khusus role",
+      "validation": "Pengguna harus login dan akun aktif",
+      "priority": "High",
+      "status": "Documented from source; not runtime verified"
+    }
+  ],
+  "business_rules": [
+    {
+      "id": "BR01",
+      "name": "Stok satu baris per produk",
+      "module": "Produk",
+      "rule": "Setiap produk memiliki tepat satu baris stok. Stok tidak dibagi per varian.",
+      "status": "Documented from source; not runtime verified"
+    },
+    {
+      "id": "BR02",
+      "name": "Kategori produk eksklusif",
+      "module": "Produk",
+      "rule": "Produk matang dan mentah adalah entitas terpisah dengan stok masing-masing.",
+      "status": "Documented from source; not runtime verified"
+    },
+    {
+      "id": "BR03",
+      "name": "Produk harus disetujui admin",
+      "module": "Produk",
+      "rule": "Produk dengan status bukan 'disetujui' tidak muncul di katalog pembeli.",
+      "status": "Documented from source; not runtime verified"
+    },
+    {
+      "id": "BR04",
+      "name": "Stok kosong = tombol dinonaktifkan",
+      "module": "Produk/Belanja",
+      "rule": "Tombol tambah ke keranjang dinonaktifkan jika stok = 0. Server juga memvalidasi saat add dan checkout.",
+      "status": "Documented from source; not runtime verified"
+    },
+    {
+      "id": "BR05",
+      "name": "Satu toko per checkout",
+      "module": "Belanja",
+      "rule": "Checkout hanya bisa dilakukan untuk produk dari satu penjual dalam satu pesanan.",
+      "status": "Documented from source; not runtime verified"
+    },
+    {
+      "id": "BR06",
+      "name": "Checkout atomik",
+      "module": "Belanja",
+      "rule": "Pengurangan stok, pembuatan pesanan, detail, transaksi, dan mutasi dilakukan dalam satu transaksi DB.",
+      "status": "Documented from source; not runtime verified"
+    },
+    {
+      "id": "BR07",
+      "name": "Register = role Pembeli",
+      "module": "Autentikasi",
+      "rule": "Pendaftaran publik selalu menghasilkan akun dengan role Pembeli. Role tidak bisa dipilih.",
+      "status": "Documented from source; not runtime verified"
+    },
+    {
+      "id": "BR08",
+      "name": "Login cek is_active",
+      "module": "Autentikasi",
+      "rule": "Login gagal jika akun dinonaktifkan (is_active=false), meskipun kredensial benar.",
+      "status": "Documented from source; not runtime verified"
+    },
+    {
+      "id": "BR09",
+      "name": "Throttle login/register",
+      "module": "Autentikasi",
+      "rule": "Login dan register dibatasi 5 request per menit untuk mencegah brute force.",
+      "status": "Documented from source; not runtime verified"
+    },
+    {
+      "id": "BR10",
+      "name": "Alur status pesanan berurutan",
+      "module": "Pesanan",
+      "rule": "menunggu → diproses → dikirim → selesai. Tidak bisa skip atau mundur.",
+      "status": "Documented from source; not runtime verified"
+    },
+    {
+      "id": "BR11",
+      "name": "Transfer harus ada bukti sebelum verifikasi",
+      "module": "Pesanan",
+      "rule": "Penjual tidak bisa verifikasi pembayaran transfer tanpa bukti dari pembeli.",
+      "status": "Documented from source; not runtime verified"
+    },
+    {
+      "id": "BR12",
+      "name": "COD bypass verifikasi transfer",
+      "module": "Pesanan",
+      "rule": "Pesanan COD bisa langsung diproses tanpa upload bukti bayar.",
+      "status": "Documented from source; not runtime verified"
+    },
+    {
+      "id": "BR13",
+      "name": "Resi wajib saat kirim",
+      "module": "Pesanan",
+      "rule": "Penjual wajib isi nomor resi dan upload foto saat mengubah status ke dikirim.",
+      "status": "Documented from source; not runtime verified"
+    },
+    {
+      "id": "BR14",
+      "name": "COD lunas saat konfirmasi",
+      "module": "Pesanan",
+      "rule": "Untuk pesanan COD, status pembayaran menjadi lunas saat pembeli konfirmasi barang diterima.",
+      "status": "Documented from source; not runtime verified"
+    },
+    {
+      "id": "BR15",
+      "name": "Penjual hanya satu",
+      "module": "Pengguna",
+      "rule": "Sistem hanya boleh memiliki satu akun dengan role penjual.",
+      "status": "Documented from source; not runtime verified"
+    },
+    {
+      "id": "BR16",
+      "name": "Admin aktif terakhir dilindungi",
+      "module": "Pengguna",
+      "rule": "Admin aktif terakhir tidak bisa dinonaktifkan atau dicabut rolenya.",
+      "status": "Documented from source; not runtime verified"
+    },
+    {
+      "id": "BR17",
+      "name": "Riwayat harga dicatat",
+      "module": "Produk",
+      "rule": "Setiap perubahan harga produk (oleh penjual atau admin) dicatat ke riwayat_harga_produk.",
+      "status": "Documented from source; not runtime verified"
+    },
+    {
+      "id": "BR18",
+      "name": "Produk ditolak bisa diajukan ulang",
+      "module": "Produk",
+      "rule": "Penjual bisa mengedit dan resubmit produk yang ditolak; status kembali ke menunggu.",
+      "status": "Documented from source; not runtime verified"
+    },
+    {
+      "id": "BR19",
+      "name": "Stok keluar tidak boleh negatif",
+      "module": "Stok",
+      "rule": "Mutasi keluar tidak diizinkan jika jumlah > stok tersedia.",
+      "status": "Documented from source; not runtime verified"
+    },
+    {
+      "id": "BR20",
+      "name": "Email reset via log di local",
+      "module": "Autentikasi",
+      "rule": "Di environment local, email reset ditulis ke log aplikasi, bukan dikirim ke kotak masuk.",
+      "status": "Documented from source; not runtime verified"
+    }
+  ],
+  "qa_requirements": [
+    {
+      "req_id": "REQ-F01",
+      "feature_id": "F01",
+      "page_ref": "P01",
+      "requirement": "Sistem harus mendukung fitur Login sesuai alur dan validasi yang terdokumentasi.",
+      "expected_behavior": "Redirect ke dashboard role-specific atau pesan error",
+      "preconditions": "Aktor: Publik (guest). Siapkan data yang diperlukan oleh alur fitur; kredensial pengujian hanya dikelola melalui QA/.env.",
+      "test_conditions": "Pemicu: Submit form login. Input: Email, Password, Remember Me.",
+      "positive_scenario": "Jalankan pemicu dengan input valid dan verifikasi hasil: Redirect ke dashboard role-specific atau pesan error.",
+      "negative_scenario": "Uji penolakan input yang melanggar aturan: Email required, Password required, is_active harus true. Periksa bahwa perubahan yang tidak sah tidak tersimpan.",
+      "boundary_scenario": "Tidak ada batas numerik yang dinyatakan pada source.",
+      "permission_scenario": "Pastikan akses fitur sesuai aktor yang ditetapkan: Publik (guest); bandingkan dengan middleware route.",
+      "integration_scenario": "Periksa efek/alur yang dinyatakan pada source: Validasi credential + is_active, Auth::attempt, session regenerate, redirect ke dashboard sesuai role.",
+      "priority": "Critical",
+      "evidence_ref": "P01; fitur F01; routes/web.php dan implementasi terkait. Perilaku runtime belum diverifikasi."
+    },
+    {
+      "req_id": "REQ-F02",
+      "feature_id": "F02",
+      "page_ref": "P02",
+      "requirement": "Sistem harus mendukung fitur Register Akun Pembeli sesuai alur dan validasi yang terdokumentasi.",
+      "expected_behavior": "Akun baru, session aktif, redirect dashboard pembeli",
+      "preconditions": "Aktor: Publik (guest). Siapkan data yang diperlukan oleh alur fitur; kredensial pengujian hanya dikelola melalui QA/.env.",
+      "test_conditions": "Pemicu: Submit form register. Input: Nama, Email, Password, Konfirmasi Password.",
+      "positive_scenario": "Jalankan pemicu dengan input valid dan verifikasi hasil: Akun baru, session aktif, redirect dashboard pembeli.",
+      "negative_scenario": "Uji penolakan input yang melanggar aturan: Nama max 255, Email unique, Password min 8, confirmed. Periksa bahwa perubahan yang tidak sah tidak tersimpan.",
+      "boundary_scenario": "Uji batas yang dinyatakan pada source: Nama max 255, Email unique, Password min 8, confirmed.",
+      "permission_scenario": "Pastikan akses fitur sesuai aktor yang ditetapkan: Publik (guest); bandingkan dengan middleware route.",
+      "integration_scenario": "Periksa efek/alur yang dinyatakan pada source: Validasi unique email, buat User dengan role=pembeli, login otomatis, redirect dashboard pembeli.",
+      "priority": "High",
+      "evidence_ref": "P02; fitur F02; routes/web.php dan implementasi terkait. Perilaku runtime belum diverifikasi."
+    },
+    {
+      "req_id": "REQ-F03",
+      "feature_id": "F03",
+      "page_ref": "P01",
+      "requirement": "Sistem harus mendukung fitur Logout sesuai alur dan validasi yang terdokumentasi.",
+      "expected_behavior": "Redirect ke halaman login",
+      "preconditions": "Aktor: Semua (login). Siapkan data yang diperlukan oleh alur fitur; kredensial pengujian hanya dikelola melalui QA/.env.",
+      "test_conditions": "Pemicu: Klik tombol logout. Input: -.",
+      "positive_scenario": "Jalankan pemicu dengan input valid dan verifikasi hasil: Redirect ke halaman login.",
+      "negative_scenario": "Belum dijelaskan pada source; tentukan skenario negatif saat test planning.",
+      "boundary_scenario": "Tidak ada batas numerik yang dinyatakan pada source.",
+      "permission_scenario": "Pastikan akses fitur sesuai aktor yang ditetapkan: Semua (login); bandingkan dengan middleware route.",
+      "integration_scenario": "Periksa efek/alur yang dinyatakan pada source: Auth::logout, session invalidate, token regenerate.",
+      "priority": "High",
+      "evidence_ref": "P01; fitur F03; routes/web.php dan implementasi terkait. Perilaku runtime belum diverifikasi."
+    },
+    {
+      "req_id": "REQ-F04",
+      "feature_id": "F04",
+      "page_ref": "P03",
+      "requirement": "Sistem harus mendukung fitur Forgot Password sesuai alur dan validasi yang terdokumentasi.",
+      "expected_behavior": "Flash message konfirmasi pengiriman",
+      "preconditions": "Aktor: Publik (guest). Siapkan data yang diperlukan oleh alur fitur; kredensial pengujian hanya dikelola melalui QA/.env.",
+      "test_conditions": "Pemicu: Submit email. Input: Email.",
+      "positive_scenario": "Jalankan pemicu dengan input valid dan verifikasi hasil: Flash message konfirmasi pengiriman.",
+      "negative_scenario": "Uji penolakan input yang melanggar aturan: Email required, email harus ada di DB. Periksa bahwa perubahan yang tidak sah tidak tersimpan.",
+      "boundary_scenario": "Tidak ada batas numerik yang dinyatakan pada source.",
+      "permission_scenario": "Pastikan akses fitur sesuai aktor yang ditetapkan: Publik (guest); bandingkan dengan middleware route.",
+      "integration_scenario": "Periksa efek/alur yang dinyatakan pada source: Kirim link reset ke email (via mailer log di local).",
+      "priority": "Medium",
+      "evidence_ref": "P03; fitur F04; routes/web.php dan implementasi terkait. Perilaku runtime belum diverifikasi."
+    },
+    {
+      "req_id": "REQ-F05",
+      "feature_id": "F05",
+      "page_ref": "P04",
+      "requirement": "Sistem harus mendukung fitur Reset Password sesuai alur dan validasi yang terdokumentasi.",
+      "expected_behavior": "Password diupdate, redirect login",
+      "preconditions": "Aktor: Publik (via link). Siapkan data yang diperlukan oleh alur fitur; kredensial pengujian hanya dikelola melalui QA/.env.",
+      "test_conditions": "Pemicu: Submit form reset. Input: Token (dari URL), Password baru, Konfirmasi.",
+      "positive_scenario": "Jalankan pemicu dengan input valid dan verifikasi hasil: Password diupdate, redirect login.",
+      "negative_scenario": "Uji penolakan input yang melanggar aturan: Password min 8, confirmed, token valid. Periksa bahwa perubahan yang tidak sah tidak tersimpan.",
+      "boundary_scenario": "Uji batas yang dinyatakan pada source: Password min 8, confirmed, token valid.",
+      "permission_scenario": "Pastikan akses fitur sesuai aktor yang ditetapkan: Publik (via link); bandingkan dengan middleware route.",
+      "integration_scenario": "Periksa efek/alur yang dinyatakan pada source: Validasi token, update password user.",
+      "priority": "Medium",
+      "evidence_ref": "P04; fitur F05; routes/web.php dan implementasi terkait. Perilaku runtime belum diverifikasi."
+    },
+    {
+      "req_id": "REQ-F06",
+      "feature_id": "F06",
+      "page_ref": "P12",
+      "requirement": "Sistem harus mendukung fitur Edit Profil sesuai alur dan validasi yang terdokumentasi.",
+      "expected_behavior": "Data profil diperbarui",
+      "preconditions": "Aktor: Semua (login). Siapkan data yang diperlukan oleh alur fitur; kredensial pengujian hanya dikelola melalui QA/.env.",
+      "test_conditions": "Pemicu: Submit form profil. Input: Nama, Telepon, Alamat, Foto (opsional).",
+      "positive_scenario": "Jalankan pemicu dengan input valid dan verifikasi hasil: Data profil diperbarui.",
+      "negative_scenario": "Uji penolakan input yang melanggar aturan: Nama required, Foto max 5MB jpg/jpeg/png/webp. Periksa bahwa perubahan yang tidak sah tidak tersimpan.",
+      "boundary_scenario": "Uji batas yang dinyatakan pada source: Nama required, Foto max 5MB jpg/jpeg/png/webp.",
+      "permission_scenario": "Pastikan akses fitur sesuai aktor yang ditetapkan: Semua (login); bandingkan dengan middleware route.",
+      "integration_scenario": "Periksa efek/alur yang dinyatakan pada source: Update data user, simpan foto ke storage.",
+      "priority": "Medium",
+      "evidence_ref": "P12; fitur F06; routes/web.php dan implementasi terkait. Perilaku runtime belum diverifikasi."
+    },
+    {
+      "req_id": "REQ-F07",
+      "feature_id": "F07",
+      "page_ref": "P06",
+      "requirement": "Sistem harus mendukung fitur Lihat Katalog Produk sesuai alur dan validasi yang terdokumentasi.",
+      "expected_behavior": "Grid produk dengan info harga, stok, kategori",
+      "preconditions": "Aktor: Pembeli. Siapkan data yang diperlukan oleh alur fitur; kredensial pengujian hanya dikelola melalui QA/.env.",
+      "test_conditions": "Pemicu: Akses halaman produk. Input: Filter kategori (Matang/Mentah).",
+      "positive_scenario": "Jalankan pemicu dengan input valid dan verifikasi hasil: Grid produk dengan info harga, stok, kategori.",
+      "negative_scenario": "Belum dijelaskan pada source; tentukan skenario negatif saat test planning.",
+      "boundary_scenario": "Tidak ada batas numerik yang dinyatakan pada source.",
+      "permission_scenario": "Pastikan akses fitur sesuai aktor yang ditetapkan: Pembeli; bandingkan dengan middleware route.",
+      "integration_scenario": "Periksa efek/alur yang dinyatakan pada source: Query produk status=disetujui & is_active=true milik penjual.",
+      "priority": "High",
+      "evidence_ref": "P06; fitur F07; routes/web.php dan implementasi terkait. Perilaku runtime belum diverifikasi."
+    },
+    {
+      "req_id": "REQ-F08",
+      "feature_id": "F08",
+      "page_ref": "P06",
+      "requirement": "Sistem harus mendukung fitur Tambah ke Keranjang sesuai alur dan validasi yang terdokumentasi.",
+      "expected_behavior": "Item ditambahkan ke keranjang, flash message",
+      "preconditions": "Aktor: Pembeli. Siapkan data yang diperlukan oleh alur fitur; kredensial pengujian hanya dikelola melalui QA/.env.",
+      "test_conditions": "Pemicu: Klik tombol tambah ke keranjang. Input: Produk ID, Jumlah, Kategori.",
+      "positive_scenario": "Jalankan pemicu dengan input valid dan verifikasi hasil: Item ditambahkan ke keranjang, flash message.",
+      "negative_scenario": "Uji penolakan input yang melanggar aturan: Jumlah min 1 max 1000, jumlah + existing <= stok, produk harus disetujui & aktif. Periksa bahwa perubahan yang tidak sah tidak tersimpan.",
+      "boundary_scenario": "Uji batas yang dinyatakan pada source: Jumlah min 1 max 1000, jumlah + existing <= stok, produk harus disetujui & aktif.",
+      "permission_scenario": "Pastikan akses fitur sesuai aktor yang ditetapkan: Pembeli; bandingkan dengan middleware route.",
+      "integration_scenario": "Periksa efek/alur yang dinyatakan pada source: Validasi stok, cek produk aktif & disetujui, buat/update BuyerCartItem dalam transaksi DB.",
+      "priority": "High",
+      "evidence_ref": "P06; fitur F08; routes/web.php dan implementasi terkait. Perilaku runtime belum diverifikasi."
+    },
+    {
+      "req_id": "REQ-F09",
+      "feature_id": "F09",
+      "page_ref": "P07",
+      "requirement": "Sistem harus mendukung fitur Ubah Jumlah Keranjang sesuai alur dan validasi yang terdokumentasi.",
+      "expected_behavior": "Jumlah diperbarui, total berubah",
+      "preconditions": "Aktor: Pembeli. Siapkan data yang diperlukan oleh alur fitur; kredensial pengujian hanya dikelola melalui QA/.env.",
+      "test_conditions": "Pemicu: Submit form ubah qty di keranjang. Input: Line key (produk_id-kategori), Jumlah baru.",
+      "positive_scenario": "Jalankan pemicu dengan input valid dan verifikasi hasil: Jumlah diperbarui, total berubah.",
+      "negative_scenario": "Uji penolakan input yang melanggar aturan: Jumlah min 1 max 1000, tidak melebihi stok, produk masih aktif. Periksa bahwa perubahan yang tidak sah tidak tersimpan.",
+      "boundary_scenario": "Uji batas yang dinyatakan pada source: Jumlah min 1 max 1000, tidak melebihi stok, produk masih aktif.",
+      "permission_scenario": "Pastikan akses fitur sesuai aktor yang ditetapkan: Pembeli; bandingkan dengan middleware route.",
+      "integration_scenario": "Periksa efek/alur yang dinyatakan pada source: Validasi stok baru, update BuyerCartItem.",
+      "priority": "Medium",
+      "evidence_ref": "P07; fitur F09; routes/web.php dan implementasi terkait. Perilaku runtime belum diverifikasi."
+    },
+    {
+      "req_id": "REQ-F10",
+      "feature_id": "F10",
+      "page_ref": "P07",
+      "requirement": "Sistem harus mendukung fitur Hapus Item Keranjang sesuai alur dan validasi yang terdokumentasi.",
+      "expected_behavior": "Item dihapus dari keranjang",
+      "preconditions": "Aktor: Pembeli. Siapkan data yang diperlukan oleh alur fitur; kredensial pengujian hanya dikelola melalui QA/.env.",
+      "test_conditions": "Pemicu: Klik hapus item. Input: Line key.",
+      "positive_scenario": "Jalankan pemicu dengan input valid dan verifikasi hasil: Item dihapus dari keranjang.",
+      "negative_scenario": "Belum dijelaskan pada source; tentukan skenario negatif saat test planning.",
+      "boundary_scenario": "Tidak ada batas numerik yang dinyatakan pada source.",
+      "permission_scenario": "Pastikan akses fitur sesuai aktor yang ditetapkan: Pembeli; bandingkan dengan middleware route.",
+      "integration_scenario": "Periksa efek/alur yang dinyatakan pada source: Delete BuyerCartItem.",
+      "priority": "Medium",
+      "evidence_ref": "P07; fitur F10; routes/web.php dan implementasi terkait. Perilaku runtime belum diverifikasi."
+    },
+    {
+      "req_id": "REQ-F11",
+      "feature_id": "F11",
+      "page_ref": "P08",
+      "requirement": "Sistem harus mendukung fitur Checkout & Buat Pesanan sesuai alur dan validasi yang terdokumentasi.",
+      "expected_behavior": "Pesanan baru dibuat, redirect ke daftar pesanan",
+      "preconditions": "Aktor: Pembeli. Siapkan data yang diperlukan oleh alur fitur; kredensial pengujian hanya dikelola melalui QA/.env.",
+      "test_conditions": "Pemicu: Submit form checkout. Input: Alamat pengiriman, Kurir, Metode bayar.",
+      "positive_scenario": "Jalankan pemicu dengan input valid dan verifikasi hasil: Pesanan baru dibuat, redirect ke daftar pesanan.",
+      "negative_scenario": "Uji penolakan input yang melanggar aturan: Semua item harus tersedia, stok cukup, kurir aktif, metode bayar valid, satu toko per pesanan. Periksa bahwa perubahan yang tidak sah tidak tersimpan.",
+      "boundary_scenario": "Tidak ada batas numerik yang dinyatakan pada source.",
+      "permission_scenario": "Pastikan akses fitur sesuai aktor yang ditetapkan: Pembeli; bandingkan dengan middleware route.",
+      "integration_scenario": "Periksa efek/alur yang dinyatakan pada source: Validasi stok (lock), hitung ongkir (ShippingCalculator), buat Pesanan + DetailPesanan + Transaksi + MutasiStok dalam transaksi DB atomik, hapus item keranjang.",
+      "priority": "Critical",
+      "evidence_ref": "P08; fitur F11; routes/web.php dan implementasi terkait. Perilaku runtime belum diverifikasi."
+    },
+    {
+      "req_id": "REQ-F12",
+      "feature_id": "F12",
+      "page_ref": "P09",
+      "requirement": "Sistem harus mendukung fitur Upload Bukti Pembayaran sesuai alur dan validasi yang terdokumentasi.",
+      "expected_behavior": "Bukti tersimpan, penjual dapat verifikasi",
+      "preconditions": "Aktor: Pembeli. Siapkan data yang diperlukan oleh alur fitur; kredensial pengujian hanya dikelola melalui QA/.env.",
+      "test_conditions": "Pemicu: Submit form upload. Input: Pesanan ID, File foto bukti.",
+      "positive_scenario": "Jalankan pemicu dengan input valid dan verifikasi hasil: Bukti tersimpan, penjual dapat verifikasi.",
+      "negative_scenario": "Uji penolakan input yang melanggar aturan: File required, image jpg/jpeg/png/webp max 5MB. Periksa bahwa perubahan yang tidak sah tidak tersimpan.",
+      "boundary_scenario": "Uji batas yang dinyatakan pada source: File required, image jpg/jpeg/png/webp max 5MB.",
+      "permission_scenario": "Pastikan akses fitur sesuai aktor yang ditetapkan: Pembeli; bandingkan dengan middleware route.",
+      "integration_scenario": "Periksa efek/alur yang dinyatakan pada source: Simpan bukti ke storage, update transaksi.bukti_pembayaran.",
+      "priority": "High",
+      "evidence_ref": "P09; fitur F12; routes/web.php dan implementasi terkait. Perilaku runtime belum diverifikasi."
+    },
+    {
+      "req_id": "REQ-F13",
+      "feature_id": "F13",
+      "page_ref": "P09",
+      "requirement": "Sistem harus mendukung fitur Konfirmasi Barang Diterima sesuai alur dan validasi yang terdokumentasi.",
+      "expected_behavior": "Status pesanan menjadi selesai",
+      "preconditions": "Aktor: Pembeli. Siapkan data yang diperlukan oleh alur fitur; kredensial pengujian hanya dikelola melalui QA/.env.",
+      "test_conditions": "Pemicu: Klik tombol konfirmasi. Input: Pesanan ID.",
+      "positive_scenario": "Jalankan pemicu dengan input valid dan verifikasi hasil: Status pesanan menjadi selesai.",
+      "negative_scenario": "Uji penolakan input yang melanggar aturan: Status pesanan harus dikirim, pembayaran valid. Periksa bahwa perubahan yang tidak sah tidak tersimpan.",
+      "boundary_scenario": "Tidak ada batas numerik yang dinyatakan pada source.",
+      "permission_scenario": "Pastikan akses fitur sesuai aktor yang ditetapkan: Pembeli; bandingkan dengan middleware route.",
+      "integration_scenario": "Periksa efek/alur yang dinyatakan pada source: Validasi status=dikirim & pembayaran lunas, update status=selesai, update tanggal_selesai, untuk COD update transaksi=lunas.",
+      "priority": "High",
+      "evidence_ref": "P09; fitur F13; routes/web.php dan implementasi terkait. Perilaku runtime belum diverifikasi."
+    },
+    {
+      "req_id": "REQ-F14",
+      "feature_id": "F14",
+      "page_ref": "P09",
+      "requirement": "Sistem harus mendukung fitur Lihat Bukti Pembayaran sesuai alur dan validasi yang terdokumentasi.",
+      "expected_behavior": "Tampilkan/unduh file bukti pembayaran",
+      "preconditions": "Aktor: Pembeli, Penjual. Siapkan data yang diperlukan oleh alur fitur; kredensial pengujian hanya dikelola melalui QA/.env.",
+      "test_conditions": "Pemicu: Klik link lihat bukti. Input: Pesanan ID.",
+      "positive_scenario": "Jalankan pemicu dengan input valid dan verifikasi hasil: Tampilkan/unduh file bukti pembayaran.",
+      "negative_scenario": "Belum dijelaskan pada source; tentukan skenario negatif saat test planning.",
+      "boundary_scenario": "Tidak ada batas numerik yang dinyatakan pada source.",
+      "permission_scenario": "Pastikan akses fitur sesuai aktor yang ditetapkan: Pembeli, Penjual; bandingkan dengan middleware route.",
+      "integration_scenario": "Periksa efek/alur yang dinyatakan pada source: Show/download file bukti dari storage.",
+      "priority": "Medium",
+      "evidence_ref": "P09; fitur F14; routes/web.php dan implementasi terkait. Perilaku runtime belum diverifikasi."
+    },
+    {
+      "req_id": "REQ-F15",
+      "feature_id": "F15",
+      "page_ref": "P11,P19",
+      "requirement": "Sistem harus mendukung fitur Chat Pesanan (Pembeli↔Penjual) sesuai alur dan validasi yang terdokumentasi.",
+      "expected_behavior": "Pesan terkirim, badge unread diperbarui",
+      "preconditions": "Aktor: Pembeli, Penjual. Siapkan data yang diperlukan oleh alur fitur; kredensial pengujian hanya dikelola melalui QA/.env.",
+      "test_conditions": "Pemicu: Kirim pesan di chat pesanan. Input: Pesanan ID, Isi pesan.",
+      "positive_scenario": "Jalankan pemicu dengan input valid dan verifikasi hasil: Pesan terkirim, badge unread diperbarui.",
+      "negative_scenario": "Uji penolakan input yang melanggar aturan: Pesan tidak boleh kosong, max (tbd), throttle 10/menit. Periksa bahwa perubahan yang tidak sah tidak tersimpan.",
+      "boundary_scenario": "Uji batas yang dinyatakan pada source: Pesan tidak boleh kosong, max (tbd), throttle 10/menit.",
+      "permission_scenario": "Pastikan akses fitur sesuai aktor yang ditetapkan: Pembeli, Penjual; bandingkan dengan middleware route.",
+      "integration_scenario": "Periksa efek/alur yang dinyatakan pada source: Buat OrderMessage, throttle 10/menit.",
+      "priority": "Medium",
+      "evidence_ref": "P11,P19; fitur F15; routes/web.php dan implementasi terkait. Perilaku runtime belum diverifikasi."
+    },
+    {
+      "req_id": "REQ-F16",
+      "feature_id": "F16",
+      "page_ref": "P10,P18",
+      "requirement": "Sistem harus mendukung fitur Pusat Bantuan (Buka/Kirim Pesan) sesuai alur dan validasi yang terdokumentasi.",
+      "expected_behavior": "Pesan terkirim ke admin, status percakapan open",
+      "preconditions": "Aktor: Pembeli, Penjual. Siapkan data yang diperlukan oleh alur fitur; kredensial pengujian hanya dikelola melalui QA/.env.",
+      "test_conditions": "Pemicu: Kirim pesan di CS. Input: Isi pesan.",
+      "positive_scenario": "Jalankan pemicu dengan input valid dan verifikasi hasil: Pesan terkirim ke admin, status percakapan open.",
+      "negative_scenario": "Uji penolakan input yang melanggar aturan: Throttle 10/menit. Periksa bahwa perubahan yang tidak sah tidak tersimpan.",
+      "boundary_scenario": "Tidak ada batas numerik yang dinyatakan pada source.",
+      "permission_scenario": "Pastikan akses fitur sesuai aktor yang ditetapkan: Pembeli, Penjual; bandingkan dengan middleware route.",
+      "integration_scenario": "Periksa efek/alur yang dinyatakan pada source: Buat/update CustomerServiceConversation + Message, throttle 10/menit.",
+      "priority": "Medium",
+      "evidence_ref": "P10,P18; fitur F16; routes/web.php dan implementasi terkait. Perilaku runtime belum diverifikasi."
+    },
+    {
+      "req_id": "REQ-F17",
+      "feature_id": "F17",
+      "page_ref": "P14",
+      "requirement": "Sistem harus mendukung fitur Tambah Produk Baru (Penjual) sesuai alur dan validasi yang terdokumentasi.",
+      "expected_behavior": "Produk baru dengan status menunggu validasi",
+      "preconditions": "Aktor: Penjual. Siapkan data yang diperlukan oleh alur fitur; kredensial pengujian hanya dikelola melalui QA/.env.",
+      "test_conditions": "Pemicu: Submit form tambah produk. Input: Nama, Kategori (matang/mentah), Harga, Stok Awal, Deskripsi, Gambar.",
+      "positive_scenario": "Jalankan pemicu dengan input valid dan verifikasi hasil: Produk baru dengan status menunggu validasi.",
+      "negative_scenario": "Uji penolakan input yang melanggar aturan: Semua field required, Harga min 1 max 100jt, Stok max 100rb, Gambar max 5MB. Periksa bahwa perubahan yang tidak sah tidak tersimpan.",
+      "boundary_scenario": "Uji batas yang dinyatakan pada source: Semua field required, Harga min 1 max 100jt, Stok max 100rb, Gambar max 5MB.",
+      "permission_scenario": "Pastikan akses fitur sesuai aktor yang ditetapkan: Penjual; bandingkan dengan middleware route.",
+      "integration_scenario": "Periksa efek/alur yang dinyatakan pada source: Buat Produk (status=menunggu), buat Stok, buat MutasiStok jika stok_awal>0.",
+      "priority": "High",
+      "evidence_ref": "P14; fitur F17; routes/web.php dan implementasi terkait. Perilaku runtime belum diverifikasi."
+    },
+    {
+      "req_id": "REQ-F18",
+      "feature_id": "F18",
+      "page_ref": "P14",
+      "requirement": "Sistem harus mendukung fitur Edit Produk (Penjual) sesuai alur dan validasi yang terdokumentasi.",
+      "expected_behavior": "Produk diperbarui, riwayat harga tercatat",
+      "preconditions": "Aktor: Penjual. Siapkan data yang diperlukan oleh alur fitur; kredensial pengujian hanya dikelola melalui QA/.env.",
+      "test_conditions": "Pemicu: Submit form edit produk. Input: Nama, Kategori, Harga, Deskripsi, Gambar (opsional).",
+      "positive_scenario": "Jalankan pemicu dengan input valid dan verifikasi hasil: Produk diperbarui, riwayat harga tercatat.",
+      "negative_scenario": "Uji penolakan input yang melanggar aturan: Hanya produk milik penjual, validasi sama dengan tambah produk. Periksa bahwa perubahan yang tidak sah tidak tersimpan.",
+      "boundary_scenario": "Tidak ada batas numerik yang dinyatakan pada source.",
+      "permission_scenario": "Pastikan akses fitur sesuai aktor yang ditetapkan: Penjual; bandingkan dengan middleware route.",
+      "integration_scenario": "Periksa efek/alur yang dinyatakan pada source: Update Produk, catat RiwayatHarga jika harga berubah, jika status=ditolak → resubmit ke menunggu.",
+      "priority": "High",
+      "evidence_ref": "P14; fitur F18; routes/web.php dan implementasi terkait. Perilaku runtime belum diverifikasi."
+    },
+    {
+      "req_id": "REQ-F19",
+      "feature_id": "F19",
+      "page_ref": "P14",
+      "requirement": "Sistem harus mendukung fitur Kelola Stok — Mutasi (Penjual) sesuai alur dan validasi yang terdokumentasi.",
+      "expected_behavior": "Stok diperbarui, mutasi tercatat",
+      "preconditions": "Aktor: Penjual. Siapkan data yang diperlukan oleh alur fitur; kredensial pengujian hanya dikelola melalui QA/.env.",
+      "test_conditions": "Pemicu: Submit form mutasi stok. Input: Produk ID, Kategori, Jenis (masuk/keluar), Jumlah, Catatan.",
+      "positive_scenario": "Jalankan pemicu dengan input valid dan verifikasi hasil: Stok diperbarui, mutasi tercatat.",
+      "negative_scenario": "Uji penolakan input yang melanggar aturan: Keluar tidak boleh > stok, Jumlah min 1 max 100rb. Periksa bahwa perubahan yang tidak sah tidak tersimpan.",
+      "boundary_scenario": "Uji batas yang dinyatakan pada source: Keluar tidak boleh > stok, Jumlah min 1 max 100rb.",
+      "permission_scenario": "Pastikan akses fitur sesuai aktor yang ditetapkan: Penjual; bandingkan dengan middleware route.",
+      "integration_scenario": "Periksa efek/alur yang dinyatakan pada source: Validasi keluar ≤ stok, update Stok, buat MutasiStok.",
+      "priority": "High",
+      "evidence_ref": "P14; fitur F19; routes/web.php dan implementasi terkait. Perilaku runtime belum diverifikasi."
+    },
+    {
+      "req_id": "REQ-F20",
+      "feature_id": "F20",
+      "page_ref": "P14",
+      "requirement": "Sistem harus mendukung fitur Kelola Stok — Sesuaikan (Penjual) sesuai alur dan validasi yang terdokumentasi.",
+      "expected_behavior": "Stok disesuaikan, mutasi tercatat",
+      "preconditions": "Aktor: Penjual. Siapkan data yang diperlukan oleh alur fitur; kredensial pengujian hanya dikelola melalui QA/.env.",
+      "test_conditions": "Pemicu: Submit form sesuaikan stok. Input: Produk ID, Kategori, Jumlah baru.",
+      "positive_scenario": "Jalankan pemicu dengan input valid dan verifikasi hasil: Stok disesuaikan, mutasi tercatat.",
+      "negative_scenario": "Uji penolakan input yang melanggar aturan: Jumlah min 0 max 100rb. Periksa bahwa perubahan yang tidak sah tidak tersimpan.",
+      "boundary_scenario": "Uji batas yang dinyatakan pada source: Jumlah min 0 max 100rb.",
+      "permission_scenario": "Pastikan akses fitur sesuai aktor yang ditetapkan: Penjual; bandingkan dengan middleware route.",
+      "integration_scenario": "Periksa efek/alur yang dinyatakan pada source: Hitung selisih, update Stok, buat MutasiStok otomatis masuk/keluar.",
+      "priority": "Medium",
+      "evidence_ref": "P14; fitur F20; routes/web.php dan implementasi terkait. Perilaku runtime belum diverifikasi."
+    },
+    {
+      "req_id": "REQ-F21",
+      "feature_id": "F21",
+      "page_ref": "P15",
+      "requirement": "Sistem harus mendukung fitur Verifikasi Pembayaran (Penjual) sesuai alur dan validasi yang terdokumentasi.",
+      "expected_behavior": "Pembayaran dikonfirmasi/ditolak, pesanan diproses jika lunas",
+      "preconditions": "Aktor: Penjual. Siapkan data yang diperlukan oleh alur fitur; kredensial pengujian hanya dikelola melalui QA/.env.",
+      "test_conditions": "Pemicu: Submit form verifikasi. Input: Pesanan ID, Status pembayaran (lunas/gagal), Catatan.",
+      "positive_scenario": "Jalankan pemicu dengan input valid dan verifikasi hasil: Pembayaran dikonfirmasi/ditolak, pesanan diproses jika lunas.",
+      "negative_scenario": "Uji penolakan input yang melanggar aturan: Status pesanan harus menunggu, bukan COD, bukti ada. Periksa bahwa perubahan yang tidak sah tidak tersimpan.",
+      "boundary_scenario": "Tidak ada batas numerik yang dinyatakan pada source.",
+      "permission_scenario": "Pastikan akses fitur sesuai aktor yang ditetapkan: Penjual; bandingkan dengan middleware route.",
+      "integration_scenario": "Periksa efek/alur yang dinyatakan pada source: Validasi status pesanan=menunggu & bukti ada & bukan COD, update Transaksi + status pesanan jika lunas.",
+      "priority": "Critical",
+      "evidence_ref": "P15; fitur F21; routes/web.php dan implementasi terkait. Perilaku runtime belum diverifikasi."
+    },
+    {
+      "req_id": "REQ-F22",
+      "feature_id": "F22",
+      "page_ref": "P15",
+      "requirement": "Sistem harus mendukung fitur Input Resi & Kirim Pesanan (Penjual) sesuai alur dan validasi yang terdokumentasi.",
+      "expected_behavior": "Status pesanan menjadi dikirim, resi dan bukti tersimpan",
+      "preconditions": "Aktor: Penjual. Siapkan data yang diperlukan oleh alur fitur; kredensial pengujian hanya dikelola melalui QA/.env.",
+      "test_conditions": "Pemicu: Submit form kirim. Input: Pesanan ID, Nomor Resi, Foto Bukti Pengiriman.",
+      "positive_scenario": "Jalankan pemicu dengan input valid dan verifikasi hasil: Status pesanan menjadi dikirim, resi dan bukti tersimpan.",
+      "negative_scenario": "Uji penolakan input yang melanggar aturan: Status harus diproses, pembayaran valid, resi required, foto max 5MB. Periksa bahwa perubahan yang tidak sah tidak tersimpan.",
+      "boundary_scenario": "Uji batas yang dinyatakan pada source: Status harus diproses, pembayaran valid, resi required, foto max 5MB.",
+      "permission_scenario": "Pastikan akses fitur sesuai aktor yang ditetapkan: Penjual; bandingkan dengan middleware route.",
+      "integration_scenario": "Periksa efek/alur yang dinyatakan pada source: Validasi status=diproses & pembayaran lunas/cod, simpan foto, update status=dikirim + resi.",
+      "priority": "Critical",
+      "evidence_ref": "P15; fitur F22; routes/web.php dan implementasi terkait. Perilaku runtime belum diverifikasi."
+    },
+    {
+      "req_id": "REQ-F23",
+      "feature_id": "F23",
+      "page_ref": "P15",
+      "requirement": "Sistem harus mendukung fitur Advance Status COD (Penjual) sesuai alur dan validasi yang terdokumentasi.",
+      "expected_behavior": "Status pesanan menjadi diproses",
+      "preconditions": "Aktor: Penjual. Siapkan data yang diperlukan oleh alur fitur; kredensial pengujian hanya dikelola melalui QA/.env.",
+      "test_conditions": "Pemicu: Klik tombol lanjutkan. Input: Pesanan ID.",
+      "positive_scenario": "Jalankan pemicu dengan input valid dan verifikasi hasil: Status pesanan menjadi diproses.",
+      "negative_scenario": "Uji penolakan input yang melanggar aturan: Hanya untuk COD atau jika sudah diverifikasi. Periksa bahwa perubahan yang tidak sah tidak tersimpan.",
+      "boundary_scenario": "Tidak ada batas numerik yang dinyatakan pada source.",
+      "permission_scenario": "Pastikan akses fitur sesuai aktor yang ditetapkan: Penjual; bandingkan dengan middleware route.",
+      "integration_scenario": "Periksa efek/alur yang dinyatakan pada source: Validasi COD: status=menunggu → diproses langsung tanpa verifikasi bayar.",
+      "priority": "High",
+      "evidence_ref": "P15; fitur F23; routes/web.php dan implementasi terkait. Perilaku runtime belum diverifikasi."
+    },
+    {
+      "req_id": "REQ-F24",
+      "feature_id": "F24",
+      "page_ref": "P16",
+      "requirement": "Sistem harus mendukung fitur Lihat & Ekspor Transaksi (Penjual) sesuai alur dan validasi yang terdokumentasi.",
+      "expected_behavior": "Tabel transaksi, file unduhan",
+      "preconditions": "Aktor: Penjual. Siapkan data yang diperlukan oleh alur fitur; kredensial pengujian hanya dikelola melalui QA/.env.",
+      "test_conditions": "Pemicu: Lihat tabel / klik ekspor. Input: Filter (opsional).",
+      "positive_scenario": "Jalankan pemicu dengan input valid dan verifikasi hasil: Tabel transaksi, file unduhan.",
+      "negative_scenario": "Belum dijelaskan pada source; tentukan skenario negatif saat test planning.",
+      "boundary_scenario": "Tidak ada batas numerik yang dinyatakan pada source.",
+      "permission_scenario": "Pastikan akses fitur sesuai aktor yang ditetapkan: Penjual; bandingkan dengan middleware route.",
+      "integration_scenario": "Periksa efek/alur yang dinyatakan pada source: Query transaksi milik produk penjual, generate Excel/PDF.",
+      "priority": "Medium",
+      "evidence_ref": "P16; fitur F24; routes/web.php dan implementasi terkait. Perilaku runtime belum diverifikasi."
+    },
+    {
+      "req_id": "REQ-F25",
+      "feature_id": "F25",
+      "page_ref": "P17",
+      "requirement": "Sistem harus mendukung fitur Kelola Metode Pembayaran (Penjual) sesuai alur dan validasi yang terdokumentasi.",
+      "expected_behavior": "Metode diperbarui, tampil di checkout pembeli",
+      "preconditions": "Aktor: Penjual. Siapkan data yang diperlukan oleh alur fitur; kredensial pengujian hanya dikelola melalui QA/.env.",
+      "test_conditions": "Pemicu: Submit form tambah/edit/hapus/toggle. Input: Nama metode, Kode, Nomor rekening, Nama pemilik, Status aktif.",
+      "positive_scenario": "Jalankan pemicu dengan input valid dan verifikasi hasil: Metode diperbarui, tampil di checkout pembeli.",
+      "negative_scenario": "Uji penolakan input yang melanggar aturan: Nama required, Nomor required. Periksa bahwa perubahan yang tidak sah tidak tersimpan.",
+      "boundary_scenario": "Tidak ada batas numerik yang dinyatakan pada source.",
+      "permission_scenario": "Pastikan akses fitur sesuai aktor yang ditetapkan: Penjual; bandingkan dengan middleware route.",
+      "integration_scenario": "Periksa efek/alur yang dinyatakan pada source: CRUD SellerPaymentMethod.",
+      "priority": "Medium",
+      "evidence_ref": "P17; fitur F25; routes/web.php dan implementasi terkait. Perilaku runtime belum diverifikasi."
+    },
+    {
+      "req_id": "REQ-F26",
+      "feature_id": "F26",
+      "page_ref": "P27",
+      "requirement": "Sistem harus mendukung fitur Balas CS Admin (Admin) sesuai alur dan validasi yang terdokumentasi.",
+      "expected_behavior": "Pesan terkirim ke user",
+      "preconditions": "Aktor: Admin. Siapkan data yang diperlukan oleh alur fitur; kredensial pengujian hanya dikelola melalui QA/.env.",
+      "test_conditions": "Pemicu: Submit form balas. Input: Conversation ID, Isi pesan.",
+      "positive_scenario": "Jalankan pemicu dengan input valid dan verifikasi hasil: Pesan terkirim ke user.",
+      "negative_scenario": "Uji penolakan input yang melanggar aturan: Throttle 20/menit. Periksa bahwa perubahan yang tidak sah tidak tersimpan.",
+      "boundary_scenario": "Tidak ada batas numerik yang dinyatakan pada source.",
+      "permission_scenario": "Pastikan akses fitur sesuai aktor yang ditetapkan: Admin; bandingkan dengan middleware route.",
+      "integration_scenario": "Periksa efek/alur yang dinyatakan pada source: Buat CustomerServiceMessage, throttle 20/menit.",
+      "priority": "Medium",
+      "evidence_ref": "P27; fitur F26; routes/web.php dan implementasi terkait. Perilaku runtime belum diverifikasi."
+    },
+    {
+      "req_id": "REQ-F27",
+      "feature_id": "F27",
+      "page_ref": "P27",
+      "requirement": "Sistem harus mendukung fitur Kelola Percakapan CS (Admin) sesuai alur dan validasi yang terdokumentasi.",
+      "expected_behavior": "Status tiket berubah",
+      "preconditions": "Aktor: Admin. Siapkan data yang diperlukan oleh alur fitur; kredensial pengujian hanya dikelola melalui QA/.env.",
+      "test_conditions": "Pemicu: Klik tutup/buka tiket. Input: Conversation ID.",
+      "positive_scenario": "Jalankan pemicu dengan input valid dan verifikasi hasil: Status tiket berubah.",
+      "negative_scenario": "Belum dijelaskan pada source; tentukan skenario negatif saat test planning.",
+      "boundary_scenario": "Tidak ada batas numerik yang dinyatakan pada source.",
+      "permission_scenario": "Pastikan akses fitur sesuai aktor yang ditetapkan: Admin; bandingkan dengan middleware route.",
+      "integration_scenario": "Periksa efek/alur yang dinyatakan pada source: Update status percakapan open/closed, catat closed_at.",
+      "priority": "Medium",
+      "evidence_ref": "P27; fitur F27; routes/web.php dan implementasi terkait. Perilaku runtime belum diverifikasi."
+    },
+    {
+      "req_id": "REQ-F28",
+      "feature_id": "F28",
+      "page_ref": "P22",
+      "requirement": "Sistem harus mendukung fitur Validasi Produk (Admin) sesuai alur dan validasi yang terdokumentasi.",
+      "expected_behavior": "Produk disetujui/ditolak, tampil/tidak di katalog",
+      "preconditions": "Aktor: Admin. Siapkan data yang diperlukan oleh alur fitur; kredensial pengujian hanya dikelola melalui QA/.env.",
+      "test_conditions": "Pemicu: Submit form approval. Input: Produk ID, Status (disetujui/ditolak), Catatan admin.",
+      "positive_scenario": "Jalankan pemicu dengan input valid dan verifikasi hasil: Produk disetujui/ditolak, tampil/tidak di katalog.",
+      "negative_scenario": "Uji penolakan input yang melanggar aturan: Status produk harus menunggu, catatan wajib jika ditolak. Periksa bahwa perubahan yang tidak sah tidak tersimpan.",
+      "boundary_scenario": "Tidak ada batas numerik yang dinyatakan pada source.",
+      "permission_scenario": "Pastikan akses fitur sesuai aktor yang ditetapkan: Admin; bandingkan dengan middleware route.",
+      "integration_scenario": "Periksa efek/alur yang dinyatakan pada source: Validasi status produk=menunggu, update status + catatan_admin.",
+      "priority": "Critical",
+      "evidence_ref": "P22; fitur F28; routes/web.php dan implementasi terkait. Perilaku runtime belum diverifikasi."
+    },
+    {
+      "req_id": "REQ-F29",
+      "feature_id": "F29",
+      "page_ref": "P23",
+      "requirement": "Sistem harus mendukung fitur Aktif/Nonaktif Produk (Admin) sesuai alur dan validasi yang terdokumentasi.",
+      "expected_behavior": "Produk tampil/tidak di katalog pembeli",
+      "preconditions": "Aktor: Admin. Siapkan data yang diperlukan oleh alur fitur; kredensial pengujian hanya dikelola melalui QA/.env.",
+      "test_conditions": "Pemicu: Toggle is_active. Input: Produk ID, is_active boolean.",
+      "positive_scenario": "Jalankan pemicu dengan input valid dan verifikasi hasil: Produk tampil/tidak di katalog pembeli.",
+      "negative_scenario": "Belum dijelaskan pada source; tentukan skenario negatif saat test planning.",
+      "boundary_scenario": "Tidak ada batas numerik yang dinyatakan pada source.",
+      "permission_scenario": "Pastikan akses fitur sesuai aktor yang ditetapkan: Admin; bandingkan dengan middleware route.",
+      "integration_scenario": "Periksa efek/alur yang dinyatakan pada source: Update produk.is_active.",
+      "priority": "High",
+      "evidence_ref": "P23; fitur F29; routes/web.php dan implementasi terkait. Perilaku runtime belum diverifikasi."
+    },
+    {
+      "req_id": "REQ-F30",
+      "feature_id": "F30",
+      "page_ref": "P23",
+      "requirement": "Sistem harus mendukung fitur Ubah Harga Produk (Admin) sesuai alur dan validasi yang terdokumentasi.",
+      "expected_behavior": "Harga diperbarui, riwayat tercatat",
+      "preconditions": "Aktor: Admin. Siapkan data yang diperlukan oleh alur fitur; kredensial pengujian hanya dikelola melalui QA/.env.",
+      "test_conditions": "Pemicu: Submit form ubah harga. Input: Produk ID, Harga baru.",
+      "positive_scenario": "Jalankan pemicu dengan input valid dan verifikasi hasil: Harga diperbarui, riwayat tercatat.",
+      "negative_scenario": "Uji penolakan input yang melanggar aturan: Harga min 1 max 100jt. Periksa bahwa perubahan yang tidak sah tidak tersimpan.",
+      "boundary_scenario": "Uji batas yang dinyatakan pada source: Harga min 1 max 100jt.",
+      "permission_scenario": "Pastikan akses fitur sesuai aktor yang ditetapkan: Admin; bandingkan dengan middleware route.",
+      "integration_scenario": "Periksa efek/alur yang dinyatakan pada source: Update harga, catat RiwayatHarga jika berbeda.",
+      "priority": "Medium",
+      "evidence_ref": "P23; fitur F30; routes/web.php dan implementasi terkait. Perilaku runtime belum diverifikasi."
+    },
+    {
+      "req_id": "REQ-F31",
+      "feature_id": "F31",
+      "page_ref": "P21",
+      "requirement": "Sistem harus mendukung fitur Kelola Pengguna (Admin) sesuai alur dan validasi yang terdokumentasi.",
+      "expected_behavior": "Data pengguna diperbarui, atau email terkirim",
+      "preconditions": "Aktor: Admin. Siapkan data yang diperlukan oleh alur fitur; kredensial pengujian hanya dikelola melalui QA/.env.",
+      "test_conditions": "Pemicu: Toggle/dropdown ubah role/status atau klik reset. Input: User ID, Role atau Status baru.",
+      "positive_scenario": "Jalankan pemicu dengan input valid dan verifikasi hasil: Data pengguna diperbarui, atau email terkirim.",
+      "negative_scenario": "Uji penolakan input yang melanggar aturan: Tidak bisa ubah/nonaktif akun sendiri, penjual hanya 1, admin aktif terakhir tidak bisa dicopot. Periksa bahwa perubahan yang tidak sah tidak tersimpan.",
+      "boundary_scenario": "Uji batas yang dinyatakan pada source: Tidak bisa ubah/nonaktif akun sendiri, penjual hanya 1, admin aktif terakhir tidak bisa dicopot.",
+      "permission_scenario": "Pastikan akses fitur sesuai aktor yang ditetapkan: Admin; bandingkan dengan middleware route.",
+      "integration_scenario": "Periksa efek/alur yang dinyatakan pada source: Update user.role / user.is_active, atau kirim email reset.",
+      "priority": "High",
+      "evidence_ref": "P21; fitur F31; routes/web.php dan implementasi terkait. Perilaku runtime belum diverifikasi."
+    },
+    {
+      "req_id": "REQ-F32",
+      "feature_id": "F32",
+      "page_ref": "P24",
+      "requirement": "Sistem harus mendukung fitur Proses Refund (Admin) sesuai alur dan validasi yang terdokumentasi.",
+      "expected_behavior": "Refund tercatat",
+      "preconditions": "Aktor: Admin. Siapkan data yang diperlukan oleh alur fitur; kredensial pengujian hanya dikelola melalui QA/.env.",
+      "test_conditions": "Pemicu: Submit form refund. Input: Pesanan ID, Alasan refund.",
+      "positive_scenario": "Jalankan pemicu dengan input valid dan verifikasi hasil: Refund tercatat.",
+      "negative_scenario": "Belum dijelaskan pada source; tentukan skenario negatif saat test planning.",
+      "boundary_scenario": "Tidak ada batas numerik yang dinyatakan pada source.",
+      "permission_scenario": "Pastikan akses fitur sesuai aktor yang ditetapkan: Admin; bandingkan dengan middleware route.",
+      "integration_scenario": "Periksa efek/alur yang dinyatakan pada source: Buat PengembalianDana, catat admin_id.",
+      "priority": "High",
+      "evidence_ref": "P24; fitur F32; routes/web.php dan implementasi terkait. Perilaku runtime belum diverifikasi."
+    },
+    {
+      "req_id": "REQ-F33",
+      "feature_id": "F33",
+      "page_ref": "P25",
+      "requirement": "Sistem harus mendukung fitur Laporan Keuangan & Ekspor (Admin) sesuai alur dan validasi yang terdokumentasi.",
+      "expected_behavior": "Tabel laporan keuangan, file unduhan",
+      "preconditions": "Aktor: Admin. Siapkan data yang diperlukan oleh alur fitur; kredensial pengujian hanya dikelola melalui QA/.env.",
+      "test_conditions": "Pemicu: Lihat laporan / klik ekspor. Input: Filter tanggal, status.",
+      "positive_scenario": "Jalankan pemicu dengan input valid dan verifikasi hasil: Tabel laporan keuangan, file unduhan.",
+      "negative_scenario": "Belum dijelaskan pada source; tentukan skenario negatif saat test planning.",
+      "boundary_scenario": "Tidak ada batas numerik yang dinyatakan pada source.",
+      "permission_scenario": "Pastikan akses fitur sesuai aktor yang ditetapkan: Admin; bandingkan dengan middleware route.",
+      "integration_scenario": "Periksa efek/alur yang dinyatakan pada source: Query transaksi semua penjual, generate Excel/PDF.",
+      "priority": "Medium",
+      "evidence_ref": "P25; fitur F33; routes/web.php dan implementasi terkait. Perilaku runtime belum diverifikasi."
+    },
+    {
+      "req_id": "REQ-F34",
+      "feature_id": "F34",
+      "page_ref": "P26",
+      "requirement": "Sistem harus mendukung fitur Kelola Jasa Kirim (Admin) sesuai alur dan validasi yang terdokumentasi.",
+      "expected_behavior": "Jasa kirim tersedia di checkout pembeli",
+      "preconditions": "Aktor: Admin. Siapkan data yang diperlukan oleh alur fitur; kredensial pengujian hanya dikelola melalui QA/.env.",
+      "test_conditions": "Pemicu: Submit form tambah/edit. Input: Nama, Kode, Tarif per kg, Status aktif.",
+      "positive_scenario": "Jalankan pemicu dengan input valid dan verifikasi hasil: Jasa kirim tersedia di checkout pembeli.",
+      "negative_scenario": "Uji penolakan input yang melanggar aturan: Nama required, Kode required, Tarif min 0. Periksa bahwa perubahan yang tidak sah tidak tersimpan.",
+      "boundary_scenario": "Uji batas yang dinyatakan pada source: Nama required, Kode required, Tarif min 0.",
+      "permission_scenario": "Pastikan akses fitur sesuai aktor yang ditetapkan: Admin; bandingkan dengan middleware route.",
+      "integration_scenario": "Periksa efek/alur yang dinyatakan pada source: CRUD JasaKirim.",
+      "priority": "Medium",
+      "evidence_ref": "P26; fitur F34; routes/web.php dan implementasi terkait. Perilaku runtime belum diverifikasi."
+    },
+    {
+      "req_id": "REQ-F35",
+      "feature_id": "F35",
+      "page_ref": "P00",
+      "requirement": "Sistem harus mendukung fitur Lihat Landing Page sesuai alur dan validasi yang terdokumentasi.",
+      "expected_behavior": "Landing page tersedia untuk pengunjung",
+      "preconditions": "Aktor: Publik (guest). Siapkan data yang diperlukan oleh alur fitur; kredensial pengujian hanya dikelola melalui QA/.env.",
+      "test_conditions": "Pemicu: Buka halaman root. Input: URL /.",
+      "positive_scenario": "Jalankan pemicu dengan input valid dan verifikasi hasil: Landing page tersedia untuk pengunjung.",
+      "negative_scenario": "Belum dijelaskan pada source; tentukan skenario negatif saat test planning.",
+      "boundary_scenario": "Tidak ada batas numerik yang dinyatakan pada source.",
+      "permission_scenario": "Pastikan akses fitur sesuai aktor yang ditetapkan: Publik (guest); bandingkan dengan middleware route.",
+      "integration_scenario": "Periksa efek/alur yang dinyatakan pada source: Tampilkan informasi usaha dan tautan login/registrasi.",
+      "priority": "Low",
+      "evidence_ref": "P00; fitur F35; routes/web.php dan implementasi terkait. Perilaku runtime belum diverifikasi."
+    },
+    {
+      "req_id": "REQ-F36",
+      "feature_id": "F36",
+      "page_ref": "P05",
+      "requirement": "Sistem harus mendukung fitur Lihat Dashboard Pembeli sesuai alur dan validasi yang terdokumentasi.",
+      "expected_behavior": "Ringkasan pesanan, katalog, dan keranjang",
+      "preconditions": "Aktor: Pembeli. Siapkan data yang diperlukan oleh alur fitur; kredensial pengujian hanya dikelola melalui QA/.env.",
+      "test_conditions": "Pemicu: Buka dashboard pembeli. Input: Sesi Pembeli.",
+      "positive_scenario": "Jalankan pemicu dengan input valid dan verifikasi hasil: Ringkasan pesanan, katalog, dan keranjang.",
+      "negative_scenario": "Belum dijelaskan pada source; tentukan skenario negatif saat test planning.",
+      "boundary_scenario": "Tidak ada batas numerik yang dinyatakan pada source.",
+      "permission_scenario": "Pastikan akses fitur sesuai aktor yang ditetapkan: Pembeli; bandingkan dengan middleware route.",
+      "integration_scenario": "Periksa efek/alur yang dinyatakan pada source: Tampilkan ringkasan akun dan tautan belanja/pesanan.",
+      "priority": "Medium",
+      "evidence_ref": "P05; fitur F36; routes/web.php dan implementasi terkait. Perilaku runtime belum diverifikasi."
+    },
+    {
+      "req_id": "REQ-F37",
+      "feature_id": "F37",
+      "page_ref": "P13",
+      "requirement": "Sistem harus mendukung fitur Lihat Dashboard Penjual sesuai alur dan validasi yang terdokumentasi.",
+      "expected_behavior": "Ringkasan penjualan, pesanan, produk aktif, pengajuan produk",
+      "preconditions": "Aktor: Penjual. Siapkan data yang diperlukan oleh alur fitur; kredensial pengujian hanya dikelola melalui QA/.env.",
+      "test_conditions": "Pemicu: Buka dashboard penjual. Input: Sesi Penjual.",
+      "positive_scenario": "Jalankan pemicu dengan input valid dan verifikasi hasil: Ringkasan penjualan, pesanan, produk aktif, pengajuan produk.",
+      "negative_scenario": "Belum dijelaskan pada source; tentukan skenario negatif saat test planning.",
+      "boundary_scenario": "Tidak ada batas numerik yang dinyatakan pada source.",
+      "permission_scenario": "Pastikan akses fitur sesuai aktor yang ditetapkan: Penjual; bandingkan dengan middleware route.",
+      "integration_scenario": "Periksa efek/alur yang dinyatakan pada source: Tampilkan indikator toko dan pesanan mendesak.",
+      "priority": "Medium",
+      "evidence_ref": "P13; fitur F37; routes/web.php dan implementasi terkait. Perilaku runtime belum diverifikasi."
+    },
+    {
+      "req_id": "REQ-F38",
+      "feature_id": "F38",
+      "page_ref": "P20",
+      "requirement": "Sistem harus mendukung fitur Lihat Dashboard Admin sesuai alur dan validasi yang terdokumentasi.",
+      "expected_behavior": "Statistik pengguna, validasi produk, transaksi, CS",
+      "preconditions": "Aktor: Admin. Siapkan data yang diperlukan oleh alur fitur; kredensial pengujian hanya dikelola melalui QA/.env.",
+      "test_conditions": "Pemicu: Buka dashboard admin. Input: Sesi Admin.",
+      "positive_scenario": "Jalankan pemicu dengan input valid dan verifikasi hasil: Statistik pengguna, validasi produk, transaksi, CS.",
+      "negative_scenario": "Belum dijelaskan pada source; tentukan skenario negatif saat test planning.",
+      "boundary_scenario": "Tidak ada batas numerik yang dinyatakan pada source.",
+      "permission_scenario": "Pastikan akses fitur sesuai aktor yang ditetapkan: Admin; bandingkan dengan middleware route.",
+      "integration_scenario": "Periksa efek/alur yang dinyatakan pada source: Tampilkan statistik platform dan ringkasan antrean.",
+      "priority": "Medium",
+      "evidence_ref": "P20; fitur F38; routes/web.php dan implementasi terkait. Perilaku runtime belum diverifikasi."
+    },
+    {
+      "req_id": "REQ-F39",
+      "feature_id": "F39",
+      "page_ref": "P28",
+      "requirement": "Sistem harus mendukung fitur Pengarah Dashboard Berdasarkan Role sesuai alur dan validasi yang terdokumentasi.",
+      "expected_behavior": "Redirect ke dashboard khusus role",
+      "preconditions": "Aktor: Semua (login). Siapkan data yang diperlukan oleh alur fitur; kredensial pengujian hanya dikelola melalui QA/.env.",
+      "test_conditions": "Pemicu: Akses /dashboard. Input: Sesi pengguna terautentikasi.",
+      "positive_scenario": "Jalankan pemicu dengan input valid dan verifikasi hasil: Redirect ke dashboard khusus role.",
+      "negative_scenario": "Uji penolakan input yang melanggar aturan: Pengguna harus login dan akun aktif. Periksa bahwa perubahan yang tidak sah tidak tersimpan.",
+      "boundary_scenario": "Tidak ada batas numerik yang dinyatakan pada source.",
+      "permission_scenario": "Pastikan akses fitur sesuai aktor yang ditetapkan: Semua (login); bandingkan dengan middleware route.",
+      "integration_scenario": "Periksa efek/alur yang dinyatakan pada source: Pilih dashboard berdasarkan role akun.",
+      "priority": "High",
+      "evidence_ref": "P28; fitur F39; routes/web.php dan implementasi terkait. Perilaku runtime belum diverifikasi."
+    }
+  ],
+  "qa_scenarios": [
+    {
+      "id": "QA001",
+      "feature": "F01",
+      "description": "Verifikasi login berhasil dengan kredensial valid untuk tiap role (admin, penjual, pembeli)",
+      "priority": "Critical",
+      "test_types": "Functional, Auth"
+    },
+    {
+      "id": "QA002",
+      "feature": "F01",
+      "description": "Verifikasi login gagal dengan password salah",
+      "priority": "Critical",
+      "test_types": "Functional, Negative"
+    },
+    {
+      "id": "QA003",
+      "feature": "F01",
+      "description": "Verifikasi login ditolak untuk akun nonaktif (is_active=false)",
+      "priority": "Critical",
+      "test_types": "Auth, Security"
+    },
+    {
+      "id": "QA004",
+      "feature": "F01",
+      "description": "Verifikasi redirect sesuai role setelah login berhasil",
+      "priority": "High",
+      "test_types": "Functional"
+    },
+    {
+      "id": "QA005",
+      "feature": "F01",
+      "description": "Verifikasi throttle login (lebih dari 5 request/menit ditolak)",
+      "priority": "High",
+      "test_types": "Security"
+    },
+    {
+      "id": "QA006",
+      "feature": "F02",
+      "description": "Verifikasi register berhasil dengan data valid, otomatis role pembeli",
+      "priority": "High",
+      "test_types": "Functional"
+    },
+    {
+      "id": "QA007",
+      "feature": "F02",
+      "description": "Verifikasi register gagal dengan email duplikat",
+      "priority": "High",
+      "test_types": "Functional, Negative"
+    },
+    {
+      "id": "QA008",
+      "feature": "F02",
+      "description": "Verifikasi validasi form register (password min 8, confirmed)",
+      "priority": "High",
+      "test_types": "Validation"
+    },
+    {
+      "id": "QA009",
+      "feature": "F07",
+      "description": "Verifikasi katalog hanya menampilkan produk status=disetujui dan is_active=true",
+      "priority": "High",
+      "test_types": "Functional, Auth"
+    },
+    {
+      "id": "QA010",
+      "feature": "F08",
+      "description": "Verifikasi tambah ke keranjang berhasil dengan jumlah valid",
+      "priority": "High",
+      "test_types": "Functional"
+    },
+    {
+      "id": "QA011",
+      "feature": "F08",
+      "description": "Verifikasi tambah ke keranjang gagal jika jumlah melebihi stok",
+      "priority": "High",
+      "test_types": "Functional, Negative"
+    },
+    {
+      "id": "QA012",
+      "feature": "F08",
+      "description": "Verifikasi produk nonaktif/belum disetujui tidak bisa ditambahkan ke keranjang",
+      "priority": "High",
+      "test_types": "Auth, Negative"
+    },
+    {
+      "id": "QA013",
+      "feature": "F11",
+      "description": "Verifikasi checkout berhasil membuat pesanan, detail, transaksi, dan mengurangi stok",
+      "priority": "Critical",
+      "test_types": "Functional, Integration"
+    },
+    {
+      "id": "QA014",
+      "feature": "F11",
+      "description": "Verifikasi checkout gagal jika stok habis di saat checkout",
+      "priority": "Critical",
+      "test_types": "Functional, Negative, Concurrency"
+    },
+    {
+      "id": "QA015",
+      "feature": "F11",
+      "description": "Verifikasi checkout hanya bisa untuk satu toko",
+      "priority": "High",
+      "test_types": "Business Rule"
+    },
+    {
+      "id": "QA016",
+      "feature": "F12",
+      "description": "Verifikasi upload bukti pembayaran berhasil disimpan",
+      "priority": "High",
+      "test_types": "Functional"
+    },
+    {
+      "id": "QA017",
+      "feature": "F13",
+      "description": "Verifikasi konfirmasi barang diterima mengubah status menjadi selesai",
+      "priority": "High",
+      "test_types": "Functional"
+    },
+    {
+      "id": "QA018",
+      "feature": "F17",
+      "description": "Verifikasi tambah produk oleh penjual, status awal menunggu",
+      "priority": "High",
+      "test_types": "Functional"
+    },
+    {
+      "id": "QA019",
+      "feature": "F18",
+      "description": "Verifikasi edit produk ditolak bisa diajukan ulang ke status menunggu",
+      "priority": "High",
+      "test_types": "Functional, Business Rule"
+    },
+    {
+      "id": "QA020",
+      "feature": "F19",
+      "description": "Verifikasi mutasi stok keluar tidak bisa melebihi stok tersedia",
+      "priority": "High",
+      "test_types": "Functional, Validation"
+    },
+    {
+      "id": "QA021",
+      "feature": "F21",
+      "description": "Verifikasi verifikasi pembayaran transfer lunas mengubah status pesanan ke diproses",
+      "priority": "Critical",
+      "test_types": "Functional"
+    },
+    {
+      "id": "QA022",
+      "feature": "F21",
+      "description": "Verifikasi verifikasi pembayaran transfer gagal tidak mengubah status pesanan",
+      "priority": "High",
+      "test_types": "Functional, Negative"
+    },
+    {
+      "id": "QA023",
+      "feature": "F22",
+      "description": "Verifikasi input resi dan upload bukti kirim mengubah status ke dikirim",
+      "priority": "Critical",
+      "test_types": "Functional"
+    },
+    {
+      "id": "QA024",
+      "feature": "F28",
+      "description": "Verifikasi admin menyetujui produk menampilkan produk di katalog",
+      "priority": "Critical",
+      "test_types": "Functional"
+    },
+    {
+      "id": "QA025",
+      "feature": "F28",
+      "description": "Verifikasi admin menolak produk dengan catatan, produk tidak tampil di katalog",
+      "priority": "High",
+      "test_types": "Functional"
+    },
+    {
+      "id": "QA026",
+      "feature": "F31",
+      "description": "Verifikasi admin tidak bisa ubah/nonaktif akunnya sendiri",
+      "priority": "High",
+      "test_types": "Security, Business Rule"
+    },
+    {
+      "id": "QA027",
+      "feature": "F31",
+      "description": "Verifikasi admin aktif terakhir tidak bisa dinonaktifkan",
+      "priority": "High",
+      "test_types": "Security, Business Rule"
+    },
+    {
+      "id": "QA028",
+      "feature": "F31",
+      "description": "Verifikasi sistem tidak bisa punya lebih dari satu penjual",
+      "priority": "High",
+      "test_types": "Business Rule"
+    },
+    {
+      "id": "QA029",
+      "feature": "F01-F39",
+      "description": "Verifikasi akses URL yang memerlukan autentikasi tanpa login ditolak atau diarahkan ke login",
+      "priority": "Critical",
+      "test_types": "Auth, Security"
+    },
+    {
+      "id": "QA030",
+      "feature": "F01-F39",
+      "description": "Verifikasi akses URL role tertentu dengan role yang tidak sesuai ditolak",
+      "priority": "Critical",
+      "test_types": "Auth, Security"
+    }
+  ],
+  "public_browser_discovery": {
+    "generated_at": "2026-11-23T15:18:16.631Z",
+    "base_url": "http://localhost:8000",
+    "role": "PUBLIC",
+    "method": "Playwright read-only crawler (link traversal, tanpa submit form)",
+    "max_pages": 40,
+    "skip_patterns": [
+      "logout",
+      "keluar",
+      "delete",
+      "hapus",
+      "destroy",
+      "remove"
+    ],
+    "unvisited_in_queue": [],
+    "pages": [
+      {
+        "page_id": "P001",
+        "role": "PUBLIC",
+        "requested_url": "http://localhost:8000/",
+        "discovery_status": "Discovered",
+        "http_status": 200,
+        "final_url": "http://localhost:8000/",
+        "redirected": false,
+        "title": "Immortal Tahu · Dari lokal, untuk semua",
+        "headings": [
+          "H1: Kebaikan lokal dalam setiap sajian.",
+          "H2: Belanja dengan mudah"
+        ],
+        "navigation": [
+          {
+            "text": "IMMORTAL TAHU",
+            "href": "http://localhost:8000"
+          },
+          {
+            "text": "Masuk",
+            "href": "http://localhost:8000/login"
+          }
+        ],
+        "links": [
+          {
+            "text": "IMMORTAL TAHU",
+            "href": "http://localhost:8000/"
+          },
+          {
+            "text": "Masuk",
+            "href": "http://localhost:8000/login"
+          },
+          {
+            "text": "Daftar Akun",
+            "href": "http://localhost:8000/register"
+          },
+          {
+            "text": "Masuk ke akun",
+            "href": "http://localhost:8000/login"
+          }
+        ],
+        "forms": [],
+        "buttons": [],
+        "tables": [],
+        "alerts": [],
+        "screenshot": "discovery/screenshots/P001_PUBLIC_home.png",
+        "console_errors": [],
+        "failed_requests": []
+      },
+      {
+        "page_id": "P002",
+        "role": "PUBLIC",
+        "requested_url": "http://localhost:8000/login",
+        "discovery_status": "Discovered",
+        "http_status": 200,
+        "final_url": "http://localhost:8000/login",
+        "redirected": false,
+        "title": "Masuk · Immortal Tahu",
+        "headings": [
+          "H1: Kebaikan lokal dalam setiap sajian.",
+          "H2: Selamat datang"
+        ],
+        "navigation": [
+          {
+            "text": "IMMORTAL TAHU DARI LOKAL, UNTUK SEMUA",
+            "href": "/"
+          }
+        ],
+        "links": [
+          {
+            "text": "IMMORTAL TAHU DARI LOKAL, UNTUK SEMUA",
+            "href": "http://localhost:8000/"
+          },
+          {
+            "text": "IMMORTAL TAHU Dari lokal, untuk semua",
+            "href": "http://localhost:8000/"
+          },
+          {
+            "text": "Lupa kata sandi?",
+            "href": "http://localhost:8000/forgot-password"
+          },
+          {
+            "text": "Daftar akun pembeli",
+            "href": "http://localhost:8000/register"
+          }
+        ],
+        "forms": [
+          {
+            "form_index": 1,
+            "id": "login-form",
+            "method": "POST",
+            "action": "http://localhost:8000/login",
+            "fields": [
+              {
+                "tag": "input",
+                "type": "email",
+                "name": "email",
+                "id": "email",
+                "label": "Email",
+                "required": true,
+                "maxlength": null,
+                "pattern": null,
+                "placeholder": "nama@email.com"
+              },
+              {
+                "tag": "input",
+                "type": "password",
+                "name": "password",
+                "id": "password",
+                "label": "Kata sandi",
+                "required": true,
+                "maxlength": null,
+                "pattern": null,
+                "placeholder": "Masukkan kata sandi"
+              },
+              {
+                "tag": "input",
+                "type": "checkbox",
+                "name": "remember",
+                "id": null,
+                "label": "Ingat saya",
+                "required": false,
+                "maxlength": null,
+                "pattern": null,
+                "placeholder": null
+              }
+            ],
+            "buttons": [
+              "",
+              "Masuk ke dashboard"
+            ]
+          }
+        ],
+        "buttons": [
+          "Masuk ke dashboard"
+        ],
+        "tables": [],
+        "alerts": [],
+        "screenshot": "discovery/screenshots/P002_PUBLIC_login.png",
+        "console_errors": [],
+        "failed_requests": []
+      },
+      {
+        "page_id": "P003",
+        "role": "PUBLIC",
+        "requested_url": "http://localhost:8000/register",
+        "discovery_status": "Discovered",
+        "http_status": 200,
+        "final_url": "http://localhost:8000/register",
+        "redirected": false,
+        "title": "Daftar Akun Pembeli · Immortal Tahu",
+        "headings": [
+          "H1: Buat akun pembeli"
+        ],
+        "navigation": [],
+        "links": [
+          {
+            "text": "IMMORTAL TAHU",
+            "href": "http://localhost:8000/"
+          },
+          {
+            "text": "Masuk",
+            "href": "http://localhost:8000/login"
+          }
+        ],
+        "forms": [
+          {
+            "form_index": 1,
+            "id": null,
+            "method": "POST",
+            "action": "http://localhost:8000/register",
+            "fields": [
+              {
+                "tag": "input",
+                "type": "text",
+                "name": "name",
+                "id": "name",
+                "label": "Nama lengkap",
+                "required": true,
+                "maxlength": null,
+                "pattern": null,
+                "placeholder": null
+              },
+              {
+                "tag": "input",
+                "type": "email",
+                "name": "email",
+                "id": "email",
+                "label": "Email",
+                "required": true,
+                "maxlength": null,
+                "pattern": null,
+                "placeholder": null
+              },
+              {
+                "tag": "input",
+                "type": "password",
+                "name": "password",
+                "id": "password",
+                "label": "Kata sandi",
+                "required": true,
+                "maxlength": null,
+                "pattern": null,
+                "placeholder": null
+              },
+              {
+                "tag": "input",
+                "type": "password",
+                "name": "password_confirmation",
+                "id": "password_confirmation",
+                "label": "Ulangi kata sandi",
+                "required": true,
+                "maxlength": null,
+                "pattern": null,
+                "placeholder": null
+              }
+            ],
+            "buttons": [
+              "Daftar sebagai pembeli"
+            ]
+          }
+        ],
+        "buttons": [
+          "Daftar sebagai pembeli"
+        ],
+        "tables": [],
+        "alerts": [],
+        "screenshot": "discovery/screenshots/P003_PUBLIC_register.png",
+        "console_errors": [],
+        "failed_requests": []
+      },
+      {
+        "page_id": "P004",
+        "role": "PUBLIC",
+        "requested_url": "http://localhost:8000/forgot-password",
+        "discovery_status": "Discovered",
+        "http_status": 200,
+        "final_url": "http://localhost:8000/forgot-password",
+        "redirected": false,
+        "title": "Reset Kata Sandi · Immortal Tahu",
+        "headings": [
+          "H1: Lupa kata sandi?"
+        ],
+        "navigation": [],
+        "links": [
+          {
+            "text": "Kembali ke login",
+            "href": "http://localhost:8000/login"
+          }
+        ],
+        "forms": [
+          {
+            "form_index": 1,
+            "id": null,
+            "method": "POST",
+            "action": "http://localhost:8000/forgot-password",
+            "fields": [
+              {
+                "tag": "input",
+                "type": "email",
+                "name": "email",
+                "id": null,
+                "label": "Email",
+                "required": true,
+                "maxlength": null,
+                "pattern": null,
+                "placeholder": null
+              }
+            ],
+            "buttons": [
+              "Kirim tautan reset"
+            ]
+          }
+        ],
+        "buttons": [
+          "Kirim tautan reset"
+        ],
+        "tables": [],
+        "alerts": [],
+        "screenshot": "discovery/screenshots/P004_PUBLIC_forgot-password.png",
+        "console_errors": [],
+        "failed_requests": []
+      }
+    ]
+  },
+  "permission_matrix": [
+    {
+      "feature_id": "F01",
+      "feature": "Login",
+      "roles": {
+        "Publik": true,
+        "Pembeli": false,
+        "Penjual": false,
+        "Admin": false
+      }
+    },
+    {
+      "feature_id": "F02",
+      "feature": "Register Akun Pembeli",
+      "roles": {
+        "Publik": true,
+        "Pembeli": false,
+        "Penjual": false,
+        "Admin": false
+      }
+    },
+    {
+      "feature_id": "F03",
+      "feature": "Logout",
+      "roles": {
+        "Publik": false,
+        "Pembeli": true,
+        "Penjual": true,
+        "Admin": true
+      }
+    },
+    {
+      "feature_id": "F04",
+      "feature": "Forgot Password",
+      "roles": {
+        "Publik": true,
+        "Pembeli": false,
+        "Penjual": false,
+        "Admin": false
+      }
+    },
+    {
+      "feature_id": "F05",
+      "feature": "Reset Password",
+      "roles": {
+        "Publik": true,
+        "Pembeli": false,
+        "Penjual": false,
+        "Admin": false
+      }
+    },
+    {
+      "feature_id": "F06",
+      "feature": "Edit Profil",
+      "roles": {
+        "Publik": false,
+        "Pembeli": true,
+        "Penjual": true,
+        "Admin": true
+      }
+    },
+    {
+      "feature_id": "F07",
+      "feature": "Lihat Katalog Produk",
+      "roles": {
+        "Publik": false,
+        "Pembeli": true,
+        "Penjual": false,
+        "Admin": false
+      }
+    },
+    {
+      "feature_id": "F08",
+      "feature": "Tambah ke Keranjang",
+      "roles": {
+        "Publik": false,
+        "Pembeli": true,
+        "Penjual": false,
+        "Admin": false
+      }
+    },
+    {
+      "feature_id": "F09",
+      "feature": "Ubah Jumlah Keranjang",
+      "roles": {
+        "Publik": false,
+        "Pembeli": true,
+        "Penjual": false,
+        "Admin": false
+      }
+    },
+    {
+      "feature_id": "F10",
+      "feature": "Hapus Item Keranjang",
+      "roles": {
+        "Publik": false,
+        "Pembeli": true,
+        "Penjual": false,
+        "Admin": false
+      }
+    },
+    {
+      "feature_id": "F11",
+      "feature": "Checkout & Buat Pesanan",
+      "roles": {
+        "Publik": false,
+        "Pembeli": true,
+        "Penjual": false,
+        "Admin": false
+      }
+    },
+    {
+      "feature_id": "F12",
+      "feature": "Upload Bukti Pembayaran",
+      "roles": {
+        "Publik": false,
+        "Pembeli": true,
+        "Penjual": false,
+        "Admin": false
+      }
+    },
+    {
+      "feature_id": "F13",
+      "feature": "Konfirmasi Barang Diterima",
+      "roles": {
+        "Publik": false,
+        "Pembeli": true,
+        "Penjual": false,
+        "Admin": false
+      }
+    },
+    {
+      "feature_id": "F14",
+      "feature": "Lihat Bukti Pembayaran",
+      "roles": {
+        "Publik": false,
+        "Pembeli": true,
+        "Penjual": true,
+        "Admin": false
+      }
+    },
+    {
+      "feature_id": "F15",
+      "feature": "Chat Pesanan (Pembeli↔Penjual)",
+      "roles": {
+        "Publik": false,
+        "Pembeli": true,
+        "Penjual": true,
+        "Admin": false
+      }
+    },
+    {
+      "feature_id": "F16",
+      "feature": "Pusat Bantuan (Buka/Kirim Pesan)",
+      "roles": {
+        "Publik": false,
+        "Pembeli": true,
+        "Penjual": true,
+        "Admin": false
+      }
+    },
+    {
+      "feature_id": "F17",
+      "feature": "Tambah Produk Baru (Penjual)",
+      "roles": {
+        "Publik": false,
+        "Pembeli": false,
+        "Penjual": true,
+        "Admin": false
+      }
+    },
+    {
+      "feature_id": "F18",
+      "feature": "Edit Produk (Penjual)",
+      "roles": {
+        "Publik": false,
+        "Pembeli": false,
+        "Penjual": true,
+        "Admin": false
+      }
+    },
+    {
+      "feature_id": "F19",
+      "feature": "Kelola Stok — Mutasi (Penjual)",
+      "roles": {
+        "Publik": false,
+        "Pembeli": false,
+        "Penjual": true,
+        "Admin": false
+      }
+    },
+    {
+      "feature_id": "F20",
+      "feature": "Kelola Stok — Sesuaikan (Penjual)",
+      "roles": {
+        "Publik": false,
+        "Pembeli": false,
+        "Penjual": true,
+        "Admin": false
+      }
+    },
+    {
+      "feature_id": "F21",
+      "feature": "Verifikasi Pembayaran (Penjual)",
+      "roles": {
+        "Publik": false,
+        "Pembeli": false,
+        "Penjual": true,
+        "Admin": false
+      }
+    },
+    {
+      "feature_id": "F22",
+      "feature": "Input Resi & Kirim Pesanan (Penjual)",
+      "roles": {
+        "Publik": false,
+        "Pembeli": false,
+        "Penjual": true,
+        "Admin": false
+      }
+    },
+    {
+      "feature_id": "F23",
+      "feature": "Advance Status COD (Penjual)",
+      "roles": {
+        "Publik": false,
+        "Pembeli": false,
+        "Penjual": true,
+        "Admin": false
+      }
+    },
+    {
+      "feature_id": "F24",
+      "feature": "Lihat & Ekspor Transaksi (Penjual)",
+      "roles": {
+        "Publik": false,
+        "Pembeli": false,
+        "Penjual": true,
+        "Admin": false
+      }
+    },
+    {
+      "feature_id": "F25",
+      "feature": "Kelola Metode Pembayaran (Penjual)",
+      "roles": {
+        "Publik": false,
+        "Pembeli": false,
+        "Penjual": true,
+        "Admin": false
+      }
+    },
+    {
+      "feature_id": "F26",
+      "feature": "Balas CS Admin (Admin)",
+      "roles": {
+        "Publik": false,
+        "Pembeli": false,
+        "Penjual": false,
+        "Admin": true
+      }
+    },
+    {
+      "feature_id": "F27",
+      "feature": "Kelola Percakapan CS (Admin)",
+      "roles": {
+        "Publik": false,
+        "Pembeli": false,
+        "Penjual": false,
+        "Admin": true
+      }
+    },
+    {
+      "feature_id": "F28",
+      "feature": "Validasi Produk (Admin)",
+      "roles": {
+        "Publik": false,
+        "Pembeli": false,
+        "Penjual": false,
+        "Admin": true
+      }
+    },
+    {
+      "feature_id": "F29",
+      "feature": "Aktif/Nonaktif Produk (Admin)",
+      "roles": {
+        "Publik": false,
+        "Pembeli": false,
+        "Penjual": false,
+        "Admin": true
+      }
+    },
+    {
+      "feature_id": "F30",
+      "feature": "Ubah Harga Produk (Admin)",
+      "roles": {
+        "Publik": false,
+        "Pembeli": false,
+        "Penjual": false,
+        "Admin": true
+      }
+    },
+    {
+      "feature_id": "F31",
+      "feature": "Kelola Pengguna (Admin)",
+      "roles": {
+        "Publik": false,
+        "Pembeli": false,
+        "Penjual": false,
+        "Admin": true
+      }
+    },
+    {
+      "feature_id": "F32",
+      "feature": "Proses Refund (Admin)",
+      "roles": {
+        "Publik": false,
+        "Pembeli": false,
+        "Penjual": false,
+        "Admin": true
+      }
+    },
+    {
+      "feature_id": "F33",
+      "feature": "Laporan Keuangan & Ekspor (Admin)",
+      "roles": {
+        "Publik": false,
+        "Pembeli": false,
+        "Penjual": false,
+        "Admin": true
+      }
+    },
+    {
+      "feature_id": "F34",
+      "feature": "Kelola Jasa Kirim (Admin)",
+      "roles": {
+        "Publik": false,
+        "Pembeli": false,
+        "Penjual": false,
+        "Admin": true
+      }
+    },
+    {
+      "feature_id": "F35",
+      "feature": "Lihat Landing Page",
+      "roles": {
+        "Publik": true,
+        "Pembeli": false,
+        "Penjual": false,
+        "Admin": false
+      }
+    },
+    {
+      "feature_id": "F36",
+      "feature": "Lihat Dashboard Pembeli",
+      "roles": {
+        "Publik": false,
+        "Pembeli": true,
+        "Penjual": false,
+        "Admin": false
+      }
+    },
+    {
+      "feature_id": "F37",
+      "feature": "Lihat Dashboard Penjual",
+      "roles": {
+        "Publik": false,
+        "Pembeli": false,
+        "Penjual": true,
+        "Admin": false
+      }
+    },
+    {
+      "feature_id": "F38",
+      "feature": "Lihat Dashboard Admin",
+      "roles": {
+        "Publik": false,
+        "Pembeli": false,
+        "Penjual": false,
+        "Admin": true
+      }
+    },
+    {
+      "feature_id": "F39",
+      "feature": "Pengarah Dashboard Berdasarkan Role",
+      "roles": {
+        "Publik": false,
+        "Pembeli": true,
+        "Penjual": true,
+        "Admin": true
+      }
+    }
+  ],
+  "discovery_limitations": [
+    "Discovery mendalam untuk halaman yang memerlukan login dilakukan melalui source code, bukan sesi browser tiap role",
+    "Status halaman dan fitur pada inventaris tidak menyatakan eksekusi fungsional atau verifikasi runtime",
+    "Alur pesanan yang bergantung pada data aktual (pesanan, stok) tidak dapat diverifikasi tanpa data demo yang lengkap",
+    "Integrasi email (forgot password) tidak terverifikasi karena mailer=log di environment local",
+    "Perilaku UI interaktif (modal, AJAX, badge real-time) hanya di-infer dari kode, belum diobservasi langsung"
+  ]
+}

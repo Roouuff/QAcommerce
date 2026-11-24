@@ -1,0 +1,12 @@
+flowchart TD
+    A[Penjual ajukan produk baru] --> B[Status: Menunggu]
+    B --> C{Admin validasi}
+    C -->|Setujui| D[Status: Disetujui]
+    C -->|Tolak + catatan| E[Status: Ditolak]
+    E -->|Penjual edit & ajukan ulang| B
+    D --> F[Tampil di katalog pembeli]
+    D --> G{Admin / Penjual ubah harga}
+    G --> H[Catat riwayat harga]
+    D --> I{Admin toggle is_active}
+    I -->|Nonaktif| J[Tidak tampil di katalog]
+    I -->|Aktif| F

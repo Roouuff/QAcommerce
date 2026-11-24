@@ -1,0 +1,10 @@
+stateDiagram-v2
+    [*] --> Menunggu : Pembeli checkout
+    Menunggu --> Diproses : Penjual verifikasi bayar (transfer lunas) ATAU Penjual advance (COD)
+    Menunggu --> Menunggu : Pembeli upload bukti bayar
+    Diproses --> Dikirim : Penjual input resi + bukti kirim
+    Dikirim --> Selesai : Pembeli konfirmasi barang diterima
+    Selesai --> [*]
+    Menunggu --> Refund : Admin proses refund
+    Diproses --> Refund : Admin proses refund
+    Dikirim --> Refund : Admin proses refund

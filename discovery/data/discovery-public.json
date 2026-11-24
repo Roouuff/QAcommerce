@@ -1,0 +1,301 @@
+{
+  "generated_at": "2026-11-23T15:18:16.631Z",
+  "base_url": "http://localhost:8000",
+  "role": "PUBLIC",
+  "method": "Playwright read-only crawler (link traversal, tanpa submit form)",
+  "max_pages": 40,
+  "skip_patterns": [
+    "logout",
+    "keluar",
+    "delete",
+    "hapus",
+    "destroy",
+    "remove"
+  ],
+  "unvisited_in_queue": [],
+  "pages": [
+    {
+      "page_id": "P001",
+      "role": "PUBLIC",
+      "requested_url": "http://localhost:8000/",
+      "discovery_status": "Discovered",
+      "http_status": 200,
+      "final_url": "http://localhost:8000/",
+      "redirected": false,
+      "title": "Immortal Tahu · Dari lokal, untuk semua",
+      "headings": [
+        "H1: Kebaikan lokal dalam setiap sajian.",
+        "H2: Belanja dengan mudah"
+      ],
+      "navigation": [
+        {
+          "text": "IMMORTAL TAHU",
+          "href": "http://localhost:8000"
+        },
+        {
+          "text": "Masuk",
+          "href": "http://localhost:8000/login"
+        }
+      ],
+      "links": [
+        {
+          "text": "IMMORTAL TAHU",
+          "href": "http://localhost:8000/"
+        },
+        {
+          "text": "Masuk",
+          "href": "http://localhost:8000/login"
+        },
+        {
+          "text": "Daftar Akun",
+          "href": "http://localhost:8000/register"
+        },
+        {
+          "text": "Masuk ke akun",
+          "href": "http://localhost:8000/login"
+        }
+      ],
+      "forms": [],
+      "buttons": [],
+      "tables": [],
+      "alerts": [],
+      "screenshot": "discovery/screenshots/P001_PUBLIC_home.png",
+      "console_errors": [],
+      "failed_requests": []
+    },
+    {
+      "page_id": "P002",
+      "role": "PUBLIC",
+      "requested_url": "http://localhost:8000/login",
+      "discovery_status": "Discovered",
+      "http_status": 200,
+      "final_url": "http://localhost:8000/login",
+      "redirected": false,
+      "title": "Masuk · Immortal Tahu",
+      "headings": [
+        "H1: Kebaikan lokal dalam setiap sajian.",
+        "H2: Selamat datang"
+      ],
+      "navigation": [
+        {
+          "text": "IMMORTAL TAHU DARI LOKAL, UNTUK SEMUA",
+          "href": "/"
+        }
+      ],
+      "links": [
+        {
+          "text": "IMMORTAL TAHU DARI LOKAL, UNTUK SEMUA",
+          "href": "http://localhost:8000/"
+        },
+        {
+          "text": "IMMORTAL TAHU Dari lokal, untuk semua",
+          "href": "http://localhost:8000/"
+        },
+        {
+          "text": "Lupa kata sandi?",
+          "href": "http://localhost:8000/forgot-password"
+        },
+        {
+          "text": "Daftar akun pembeli",
+          "href": "http://localhost:8000/register"
+        }
+      ],
+      "forms": [
+        {
+          "form_index": 1,
+          "id": "login-form",
+          "method": "POST",
+          "action": "http://localhost:8000/login",
+          "fields": [
+            {
+              "tag": "input",
+              "type": "email",
+              "name": "email",
+              "id": "email",
+              "label": "Email",
+              "required": true,
+              "maxlength": null,
+              "pattern": null,
+              "placeholder": "nama@email.com"
+            },
+            {
+              "tag": "input",
+              "type": "password",
+              "name": "password",
+              "id": "password",
+              "label": "Kata sandi",
+              "required": true,
+              "maxlength": null,
+              "pattern": null,
+              "placeholder": "Masukkan kata sandi"
+            },
+            {
+              "tag": "input",
+              "type": "checkbox",
+              "name": "remember",
+              "id": null,
+              "label": "Ingat saya",
+              "required": false,
+              "maxlength": null,
+              "pattern": null,
+              "placeholder": null
+            }
+          ],
+          "buttons": [
+            "",
+            "Masuk ke dashboard"
+          ]
+        }
+      ],
+      "buttons": [
+        "Masuk ke dashboard"
+      ],
+      "tables": [],
+      "alerts": [],
+      "screenshot": "discovery/screenshots/P002_PUBLIC_login.png",
+      "console_errors": [],
+      "failed_requests": []
+    },
+    {
+      "page_id": "P003",
+      "role": "PUBLIC",
+      "requested_url": "http://localhost:8000/register",
+      "discovery_status": "Discovered",
+      "http_status": 200,
+      "final_url": "http://localhost:8000/register",
+      "redirected": false,
+      "title": "Daftar Akun Pembeli · Immortal Tahu",
+      "headings": [
+        "H1: Buat akun pembeli"
+      ],
+      "navigation": [],
+      "links": [
+        {
+          "text": "IMMORTAL TAHU",
+          "href": "http://localhost:8000/"
+        },
+        {
+          "text": "Masuk",
+          "href": "http://localhost:8000/login"
+        }
+      ],
+      "forms": [
+        {
+          "form_index": 1,
+          "id": null,
+          "method": "POST",
+          "action": "http://localhost:8000/register",
+          "fields": [
+            {
+              "tag": "input",
+              "type": "text",
+              "name": "name",
+              "id": "name",
+              "label": "Nama lengkap",
+              "required": true,
+              "maxlength": null,
+              "pattern": null,
+              "placeholder": null
+            },
+            {
+              "tag": "input",
+              "type": "email",
+              "name": "email",
+              "id": "email",
+              "label": "Email",
+              "required": true,
+              "maxlength": null,
+              "pattern": null,
+              "placeholder": null
+            },
+            {
+              "tag": "input",
+              "type": "password",
+              "name": "password",
+              "id": "password",
+              "label": "Kata sandi",
+              "required": true,
+              "maxlength": null,
+              "pattern": null,
+              "placeholder": null
+            },
+            {
+              "tag": "input",
+              "type": "password",
+              "name": "password_confirmation",
+              "id": "password_confirmation",
+              "label": "Ulangi kata sandi",
+              "required": true,
+              "maxlength": null,
+              "pattern": null,
+              "placeholder": null
+            }
+          ],
+          "buttons": [
+            "Daftar sebagai pembeli"
+          ]
+        }
+      ],
+      "buttons": [
+        "Daftar sebagai pembeli"
+      ],
+      "tables": [],
+      "alerts": [],
+      "screenshot": "discovery/screenshots/P003_PUBLIC_register.png",
+      "console_errors": [],
+      "failed_requests": []
+    },
+    {
+      "page_id": "P004",
+      "role": "PUBLIC",
+      "requested_url": "http://localhost:8000/forgot-password",
+      "discovery_status": "Discovered",
+      "http_status": 200,
+      "final_url": "http://localhost:8000/forgot-password",
+      "redirected": false,
+      "title": "Reset Kata Sandi · Immortal Tahu",
+      "headings": [
+        "H1: Lupa kata sandi?"
+      ],
+      "navigation": [],
+      "links": [
+        {
+          "text": "Kembali ke login",
+          "href": "http://localhost:8000/login"
+        }
+      ],
+      "forms": [
+        {
+          "form_index": 1,
+          "id": null,
+          "method": "POST",
+          "action": "http://localhost:8000/forgot-password",
+          "fields": [
+            {
+              "tag": "input",
+              "type": "email",
+              "name": "email",
+              "id": null,
+              "label": "Email",
+              "required": true,
+              "maxlength": null,
+              "pattern": null,
+              "placeholder": null
+            }
+          ],
+          "buttons": [
+            "Kirim tautan reset"
+          ]
+        }
+      ],
+      "buttons": [
+        "Kirim tautan reset"
+      ],
+      "tables": [],
+      "alerts": [],
+      "screenshot": "discovery/screenshots/P004_PUBLIC_forgot-password.png",
+      "console_errors": [],
+      "failed_requests": []
+    }
+  ]
+}
